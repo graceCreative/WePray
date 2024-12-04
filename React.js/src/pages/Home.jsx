@@ -1,7 +1,7 @@
 import React from "react";
-import './App.css'
-import logo from "./assets/logo.png";
-import heroImg from "./assets/heroImg.png";
+import '../App.css'
+import logo from "../assets/logo.png";
+import heroImg from "../assets/heroImg.png";
 // import { Swiper, SwiperSlide } from "swiper/react";
 // import "swiper/swiper-bundle.min.css";
 // import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
@@ -133,7 +133,7 @@ const Home = () => {
         ))}
       </div>
 
-      <div className="testimonial-section">
+      {/* <div className="testimonial-section">
         <h1 className="title">TESTIMONIALS</h1>
         <Swiper>
           {[...Array(3)].map((_, index) => (
@@ -152,7 +152,7 @@ const Home = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build artifacts (if any)
+build/
+dist/
+
+# IDEs and editors
+.vscode/
+.idea/
+.DS_Store
