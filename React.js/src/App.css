@@ -547,6 +547,7 @@ h1 {
   width: 96%;
   height: 20vw;
   margin: 2rem auto;
+  margin-top: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;

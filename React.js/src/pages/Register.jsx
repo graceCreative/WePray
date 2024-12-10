@@ -67,7 +67,7 @@ const Register = () => {
                                 required
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md"
+                                className="mt-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md"
                             />
                         </div>
 
@@ -80,7 +80,7 @@ const Register = () => {
                                 required
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md"
+                                className="mt-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md"
                             />
                         </div>
 
@@ -93,7 +93,7 @@ const Register = () => {
                                 required
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md"
+                                className="mt-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md"
                             />
                         </div>
 
@@ -106,7 +106,7 @@ const Register = () => {
                                 required
                                 value={formData.confirmPassword}
                                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md"
+                                className="mt-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md"
                             />
                         </div>
 
@@ -114,7 +114,7 @@ const Register = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]"
                             >
                                 {loading ? 'Creating account...' : 'Register'}
                             </button>
@@ -125,7 +125,7 @@ const Register = () => {
                         Already have an account?{' '}
                         <Link
                             to="/login"
-                            className="font-medium text-blue-600 hover:text-blue-500"
+                            className="font-medium text-[#409F9C] hover:text-[#368B88]"
                         >
                             Sign in
                         </Link>

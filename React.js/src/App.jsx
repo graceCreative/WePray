@@ -13,7 +13,6 @@ import PrayerWall from './pages/PrayerWall';
 import Contact from './pages/Contact';
 import Donate from './pages/Donate';
 import SmoothScroll from './components/SmoothScroll';
-
 import "./App.css"; // Your main CSS
 
 const App = () => {
