@@ -59,6 +59,9 @@ const Dashboard = () => {
             ]);
     
             setPrayers(Array.isArray(prayersRes.data.data.prayers) ? prayersRes.data.data.prayers : []);
+            
+            console.log('Received prayers data:', prayersRes.data.data.prayers);
+            
             setEvents(Array.isArray(eventsRes.data.data.events) ? eventsRes.data.data.events : []);
             
             
@@ -262,9 +265,15 @@ const Dashboard = () => {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {prayers.slice(0, 5).map((prayer) => (
                                         <tr key={prayer.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap">{prayer.name}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {new Date(prayer.date).toLocaleDateString()}
+                                                {prayer.user_name || prayer.user?.name || 'Anonymous'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                {prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                    year: 'numeric'
+                                                }) : 'N/A'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">{prayer.subject}</td>
                                             <td className="px-6 py-4 whitespace-normal max-w-xs truncate">
@@ -281,12 +290,14 @@ const Dashboard = () => {
                                             </td>
                                             {(user.role === 'admin' || user.role === 'coordinator') && (
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                    <button
-                                                        onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
-                                                        className="mr-2 px-3 py-1 bg-green-500 text-white rounded-md"
-                                                    >
-                                                        Approve
-                                                    </button>
+                                                    {prayer.status !== 'approved' && (
+                                                        <button
+                                                            onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
+                                                            className="mr-2 px-3 py-1 bg-green-500 text-white rounded-md"
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                    )}
                                                     <button
                                                         onClick={() => handlePrayerStatusUpdate(prayer.id, 'rejected')}
                                                         className="px-3 py-1 bg-red-500 text-white rounded-md"
@@ -329,8 +340,16 @@ const Dashboard = () => {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {prayers.map((prayer) => (
                                     <tr key={prayer.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">{prayer.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(prayer.date).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {prayer.user_name || prayer.user?.name || 'Anonymous'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
+                                                day: 'numeric',
+                                                month: 'short',
+                                                year: 'numeric'
+                                            }) : 'N/A'}
+                                        </td>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.subject}</td>
                                         <td className="px-6 py-4 whitespace-normal max-w-xs truncate">{prayer.message}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -343,12 +362,14 @@ const Dashboard = () => {
                                         </td>
                                         {(user.role === 'admin' || user.role === 'coordinator') && (
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <button
-                                                    onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
-                                                    className="mr-2 px-3 py-1 bg-green-500 text-white rounded-md"
-                                                >
-                                                    Approve
-                                                </button>
+                                                {prayer.status !== 'approved' && (
+                                                    <button
+                                                        onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
+                                                        className="mr-2 px-3 py-1 bg-green-500 text-white rounded-md"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                )}
                                                 <button
                                                     onClick={() => handlePrayerStatusUpdate(prayer.id, 'rejected')}
                                                     className="px-3 py-1 bg-red-500 text-white rounded-md"

@@ -14,12 +14,21 @@ const PrayerWall = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/prayers', prayerForm);
+      const formattedData = {
+        subject: prayerForm.subject,
+        message: prayerForm.message,
+        user_name: prayerForm.name,  // This should be the name from the form
+        created_at: new Date().toISOString()
+      };
+      
+      // Log the data being sent
+      console.log('Sending prayer request with data:', formattedData);
+      
+      await api.post('/prayers', formattedData);
       setPrayerForm({ subject: '', message: '', name: '' });
       setSuccess(true);
       setError(null);
       
-      // Reset success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
       console.error('Prayer submission error:', error);
