@@ -57,7 +57,6 @@ const fetchDashboardData = async () => {
       setError(null);
       setShowForm(false)
       
-      // Reset success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
       console.error('Prayer submission error:', error);
