@@ -19,10 +19,11 @@ const Navbar = () => {
           <li><Link to="/" className="active">Home</Link></li>
           <li><Link to="/about">About Us</Link></li>
           <li><Link to="/prayerWall">Prayer Wall</Link></li>
+          <li><Link to="/dashboard">Dashboard</Link></li>
           <li><Link to="/contact">Contact Us</Link></li>
           <li><Link to="/donate">Donate</Link></li>
         </ul>
-        <Link to="/prayerWall" className="cta">Share Your Praise</Link>
+        <Link to="/praiseWall" className="cta">Share Your Praise</Link>
         </nav>
       </header>
     </>

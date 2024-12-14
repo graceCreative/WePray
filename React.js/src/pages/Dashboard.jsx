@@ -52,7 +52,7 @@ const Dashboard = () => {
             setError(null);
     
             const [prayersRes, eventsRes, usersRes, coordinatorsRes] = await Promise.all([
-                (user.role == 'admin' || user.role == 'coordinator') ? api.get('/prayers') : api.get('/prayers/approved'),
+                (user.role == 'admin' || user.role == 'coordinator') ? api.get('/prayers') : api.get('/prayers/approvedPrayers'),
                 api.get('/events'),
                 (user.role == 'admin' || user.role == 'coordinator') ? api.get('/users/members') : null,
                 user.role === 'admin' ? api.get('/users/coordinators') : null
@@ -112,6 +112,20 @@ const Dashboard = () => {
                 setError('Unauthorized: Insufficient permissions');
             } else {
                 setError('Failed to update user status');
+            }
+        }
+    };
+
+    const handleDeleteEvent = async (eventId) => {
+        try {
+            await api.delete(`/events/${eventId}`);
+            fetchDashboardData();
+        } catch (error) {
+            console.error('Failed to delete event:', error);
+            if (error.response?.status === 403) {
+                setError('Unauthorized: Insufficient permissions');
+            } else {
+                setError('Failed to delete');
             }
         }
     };
@@ -232,10 +246,12 @@ const Dashboard = () => {
                                     <div className="text-3xl text-white">{stats.pendingPrayers}</div>
                                 </div>
                             )}
+                            {(user.role === 'admin' || user.role === 'coordinator') && (
                             <div className="bg-[#409F9C] text-white p-5 rounded-lg">
                                 <div className='text-white'>Active Members</div>
                                 <div className="text-3xl text-white">{users.length}</div>
                             </div>
+                            )}
                         </div>
 
                         {/* Prayer Requests Table */}
@@ -264,7 +280,11 @@ const Dashboard = () => {
                                         <tr key={prayer.id}>
                                             <td className="px-6 py-4 whitespace-nowrap">{prayer.name}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {new Date(prayer.date).toLocaleDateString()}
+                                                {prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                    year: 'numeric'
+                                                }) : 'N/A'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">{prayer.subject}</td>
                                             <td className="px-6 py-4 whitespace-normal max-w-xs truncate">
@@ -279,7 +299,7 @@ const Dashboard = () => {
                                                     {prayer.status}
                                                 </span>
                                             </td>
-                                            {(user.role === 'admin' || user.role === 'coordinator') && (
+                                            {((user.role === 'admin' || user.role === 'coordinator')&& prayer.status!=='approved')  && (
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                     <button
                                                         onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
@@ -330,7 +350,11 @@ const Dashboard = () => {
                                 {prayers.map((prayer) => (
                                     <tr key={prayer.id}>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(prayer.date).toLocaleDateString()}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                    year: 'numeric'
+                                                }) : 'N/A'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.subject}</td>
                                         <td className="px-6 py-4 whitespace-normal max-w-xs truncate">{prayer.message}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -341,7 +365,7 @@ const Dashboard = () => {
                                                 {prayer.status}
                                             </span>
                                         </td>
-                                        {(user.role === 'admin' || user.role === 'coordinator') && (
+                                        {((user.role === 'admin' || user.role === 'coordinator') && prayer.status !== 'approved') && (
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 <button
                                                     onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
@@ -386,7 +410,9 @@ const Dashboard = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Start Time</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">End Time</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                    {(user.role==='admin' || user.role==='coordinator') && (
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                    )}    
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -400,7 +426,8 @@ const Dashboard = () => {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {new Date(event.end_time).toLocaleString()}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        {(user.role === 'admin' || user.role === 'coordinator') && (
+                                            <td className="px-6 py-4 whitespace-nowrap">
                                             <button
                                                 onClick={() => handleDeleteEvent(event.id)}
                                                 className="px-3 py-1 bg-red-500 text-white rounded-md"
@@ -408,6 +435,8 @@ const Dashboard = () => {
                                                 Delete
                                             </button>
                                         </td>
+                                        )}
+                                        
                                     </tr>
                                 ))}
                             </tbody>
@@ -509,7 +538,7 @@ const Dashboard = () => {
         <div className="flex h-screen overflow-hidden">
             {/* Sidebar */}
             <div className="w-1/4 bg-gray-200 p-4">
-                <div className="text-lg font-bold mb-0">WePray</div>
+            <a href="/"><div className="text-lg font-bold mb-0">WePray</div></a>
                 {user.role === 'admin' && <div className="text-sm font-medium mb-8 ">Admin Panel</div>}
                 {user.role === 'coordinator' && <div className="text-sm font-medium mb-4">Coordinator</div>}
                 <ul>
@@ -527,18 +556,22 @@ const Dashboard = () => {
                             Manage User Access
                         </li>
                     )}
+                    {(user.role === 'admin' || user.role === 'coordinator') && (
                     <li 
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'community' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('community')}
                     >
                         Community Settings
                     </li>
+                    )}
+                    {(user.role === 'admin' || user.role === 'coordinator') && (
                     <li 
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'prayer_requests' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('prayer_requests')}
                     >
                         Prayer Requests
                     </li>
+                    )}
                     <li 
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'comments' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('comments')}

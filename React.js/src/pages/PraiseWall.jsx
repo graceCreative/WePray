@@ -3,15 +3,16 @@ import Navbar from '../components/Navbar';
 import api from '../utils/axios';
 import PrayerCard from '../components/shared/PrayerCard';
 
-const PrayerWall = () => {
+const PraiseWall = () => {
   const [visibility, setVisibility] = useState(true);
   const [prayerForm, setPrayerForm] = useState({
     subject: '',
     message: '',
     name: '',
     visibility: visibility,
-    type: 'prayer',
-    is_anonymous: false,
+    type: 'praise',
+    is_anonymous: false
+
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -24,7 +25,7 @@ const PrayerWall = () => {
 
 const fetchDashboardData = async () => {
     try {
-      const prayersRes = await api.get("/prayers/approvedPrayers");
+      const prayersRes = await api.get("/prayers/approvedPraises");
 
       // Log the response to ensure you're getting the correct data
       console.log("API Response:", prayersRes.data);
@@ -43,7 +44,7 @@ const fetchDashboardData = async () => {
         ...prayerForm,
         is_anonymous: !prayerForm.name,
         name: prayerForm.name || 'Anonymous',
-        visibility: visibility
+        visibility: visibility,
       };
       console.log(submissionData);
       await api.post('/prayers', submissionData);
@@ -86,7 +87,7 @@ const fetchDashboardData = async () => {
         
         {success && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            Prayer request submitted successfully!
+            Praise request submitted successfully!
           </div>
         )}
 
@@ -96,7 +97,7 @@ const fetchDashboardData = async () => {
             <button
             onClick={() => setShowForm(true)} 
             className="px-3 py-1 py-2 px-4 w-50 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]">
-              Submit a Prayer
+              Submit a Praise
             </button>
             </div>
             
@@ -156,6 +157,7 @@ const fetchDashboardData = async () => {
               className="mt-1 block py-1 px-1 w-full bg-white rounded-md border-2 border-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
+
           <div>
             <label htmlFor="visibility" className="block text-sm font-medium text-gray-700">
                 Show this on Praise Wall?
@@ -170,11 +172,13 @@ const fetchDashboardData = async () => {
             </select>
             
           </div>
+
           <button
             type="submit"
+            onClick={() => setShowForm(false)}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]"
           >
-            Submit Prayer Request
+            Submit Praise
           </button>
         </form>
         )}
@@ -184,4 +188,4 @@ const fetchDashboardData = async () => {
   );
 };
 
-export default PrayerWall;
+export default PraiseWall;

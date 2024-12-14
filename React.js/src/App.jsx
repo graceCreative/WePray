@@ -10,6 +10,7 @@ import Unauthorized from './pages/Unauthorized';
 import Home from './pages/Home';
 import About from './pages/About';
 import PrayerWall from './pages/PrayerWall';
+import PraiseWall from './pages/PraiseWall';
 import Contact from './pages/Contact';
 import Donate from './pages/Donate';
 import SmoothScroll from './components/SmoothScroll';
@@ -33,6 +34,7 @@ const App = () => {
                             <Route path="/unauthorized" element={<Unauthorized />} />
                             <Route path="/about" element={<About />} />
                             <Route path="/prayerWall" element={<PrayerWall />} />
+                            <Route path="/praiseWall" element={<PraiseWall />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/donate" element={<Donate />} />
 
