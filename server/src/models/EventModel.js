@@ -6,7 +6,7 @@ class EventModel {
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
-                event_type ENUM('live_prayer', 'other') NOT NULL,
+                event_type ENUM('live_prayer', 'workshop', 'meeting') NOT NULL,
                 coordinator_id INT NOT NULL,
                 start_time DATETIME NOT NULL,
                 end_time DATETIME NOT NULL,
