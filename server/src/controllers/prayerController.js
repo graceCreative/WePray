@@ -1,24 +1,26 @@
 const PrayerModel = require('../models/PrayerModel');
 
 class PrayerController {
-   static async create(req, res) {
-       try {
-           const prayer = await PrayerModel.create({
-               user_id: req.user.id,
-               ...req.body
-           });
-
-           res.status(201).json({
-               success: true,
-               data: prayer
-           });
-       } catch (error) {
-           res.status(500).json({
-               success: false,
-               message: error.message
-           });
-       }
-   }
+    static async create(req, res) {
+        try {
+            const prayerData = {
+                ...(req.user ? { user_id: req.user.id } : {}),
+                ...req.body
+            };
+ 
+            const prayer = await PrayerModel.create(prayerData);
+            console.log("prayer req submitted");
+            res.status(201).json({
+                success: true,
+                data: prayer
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
 
    static async getAll(req, res) {
        try {
@@ -39,12 +41,31 @@ class PrayerController {
        }
    }
 
-   static async getAllApproved(req, res) {
+   static async getAllApprovedPrayers(req, res) {
         try {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             
-            const prayers = await PrayerModel.getAllApproved(page, limit);
+            const prayers = await PrayerModel.getAllApprovedPrayers(page, limit);
+            
+            res.json({
+                success: true,
+                data: prayers
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+    static async getAllApprovedPraises(req, res) {
+        try {
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            
+            const prayers = await PrayerModel.getAllApprovedPraises(page, limit);
             
             res.json({
                 success: true,

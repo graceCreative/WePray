@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const EventController = require('../controllers/eventController');
-const { isAuth, isCoordinator } = require('../middleware/auth');
+const { isAuth, isCoordinator, isAdmin } = require('../middleware/auth');
 const { validate, check } = require('../middleware/validate');
 
 const eventValidations = {
@@ -33,6 +33,6 @@ router.get('/upcoming', isAuth, EventController.getUpcoming);
 router.get('/stats', isAuth, isCoordinator, EventController.getStats);
 router.get('/:id', isAuth, EventController.getById);
 router.put('/:id', isAuth, isCoordinator, validate(eventValidations.update), EventController.update);
-router.delete('/:id', isAuth, isCoordinator, EventController.delete);
+router.delete('/:id', isAuth, isAdmin, EventController.delete);
 
 module.exports = router;

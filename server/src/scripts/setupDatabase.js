@@ -10,64 +10,64 @@ async function createDatabase() {
         // Create tables in the correct order (handling foreign key dependencies)
         
         // 1. Users table first (as it's referenced by other tables)
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                name VARCHAR(255) NOT NULL,
-                email VARCHAR(255) UNIQUE NOT NULL,
-                password VARCHAR(255),
-                google_id VARCHAR(255),
-                profile_image VARCHAR(255),
-                role ENUM('admin', 'coordinator', 'moderator', 'member') NOT NULL,
-                status ENUM('pending', 'active', 'inactive') DEFAULT 'pending',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            )
-        `);
-        console.log('Users table created successfully');
+        // await pool.query(`
+        //     CREATE TABLE IF NOT EXISTS users (
+        //         id INT PRIMARY KEY AUTO_INCREMENT,
+        //         name VARCHAR(255) NOT NULL,
+        //         email VARCHAR(255) UNIQUE NOT NULL,
+        //         password VARCHAR(255),
+        //         google_id VARCHAR(255),
+        //         profile_image VARCHAR(255),
+        //         role ENUM('admin', 'coordinator', 'moderator', 'member') NOT NULL,
+        //         status ENUM('pending', 'active', 'inactive') DEFAULT 'pending',
+        //         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        //         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        //     )
+        // `);
+        // console.log('Users table created successfully');
 
-        // 2. Prayers table (references users)
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS prayers (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                user_id INT NOT NULL,
-                subject VARCHAR(255) NOT NULL,
-                message TEXT NOT NULL,
-                status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-                reviewed_by INT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL
-            )
-        `);
-        console.log('Prayers table created successfully');
+        // // 2. Prayers table (references users)
+        // await pool.query(`
+        //     CREATE TABLE IF NOT EXISTS prayers (
+        //         id INT PRIMARY KEY AUTO_INCREMENT,
+        //         user_id INT NOT NULL,
+        //         subject VARCHAR(255) NOT NULL,
+        //         message TEXT NOT NULL,
+        //         status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+        //         reviewed_by INT,
+        //         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        //         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        //         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        //         FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL
+        //     )
+        // `);
+        // console.log('Prayers table created successfully');
 
-        // 3. Events table (references users for coordinator)
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS events (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                title VARCHAR(255) NOT NULL,
-                description TEXT,
-                event_type ENUM('live_prayer', 'other') NOT NULL,
-                coordinator_id INT NOT NULL,
-                start_time DATETIME NOT NULL,
-                end_time DATETIME NOT NULL,
-                status ENUM('upcoming', 'ongoing', 'completed', 'cancelled') DEFAULT 'upcoming',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (coordinator_id) REFERENCES users(id) ON DELETE CASCADE
-            )
-        `);
-        console.log('Events table created successfully');
+        // // 3. Events table (references users for coordinator)
+        // await pool.query(`
+        //     CREATE TABLE IF NOT EXISTS events (
+        //         id INT PRIMARY KEY AUTO_INCREMENT,
+        //         title VARCHAR(255) NOT NULL,
+        //         description TEXT,
+        //         event_type ENUM('live_prayer', 'other') NOT NULL,
+        //         coordinator_id INT NOT NULL,
+        //         start_time DATETIME NOT NULL,
+        //         end_time DATETIME NOT NULL,
+        //         status ENUM('upcoming', 'ongoing', 'completed', 'cancelled') DEFAULT 'upcoming',
+        //         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        //         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        //         FOREIGN KEY (coordinator_id) REFERENCES users(id) ON DELETE CASCADE
+        //     )
+        // `);
+        // console.log('Events table created successfully');
 
-        // Insert default admin user if not exists
-        const hashedPassword = require('bcryptjs').hashSync('admin123', 10);
-        await pool.query(`
-            INSERT IGNORE INTO users (name, email, password, role, status) 
-            VALUES (?, ?, ?, ?, ?)
-        `, ['Admin User', 'admin@wepray.com', hashedPassword, 'admin', 'active']);
-        console.log('Default admin user created (if not exists)');
+        // // Insert default admin user if not exists
+        // // const hashedPassword = require('bcryptjs').hashSync('admin123', 10);
+        // // await pool.query(`
+        // //     INSERT IGNORE INTO users (name, email, password, role, status) 
+        // //     VALUES (?, ?, ?, ?, ?)
+        // // `, ['Admin User', 'admin@wepray.com', hashedPassword, 'admin', 'active']);
+        // // console.log('Default admin user created (if not exists)');
 
         console.log('Database setup completed successfully');
     } catch (error) {

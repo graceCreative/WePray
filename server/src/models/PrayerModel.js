@@ -5,10 +5,13 @@ class PrayerModel {
         const query = `
             CREATE TABLE IF NOT EXISTS prayers (
                 id INT PRIMARY KEY AUTO_INCREMENT,
-                user_id INT NOT NULL,
+                name VARCHAR(255),
+                user_id INT,
                 subject VARCHAR(255) NOT NULL,
                 message TEXT NOT NULL,
                 status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+                visibility BOOL DEFAULT True,
+                type ENUM('prayer', 'praise') DEFAULT 'prayer',
                 reviewed_by INT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -27,20 +30,28 @@ class PrayerModel {
     }
 
     static async create(prayerData) {
-        const { user_id, subject, message } = prayerData;
+        const { name, user_id, subject, message, is_anonymous, visibility,
+            type } = prayerData;
         
         try {
+            // const processedName = is_anonymous ? 'Anonymous' : name;
+            const processedUserId = is_anonymous ? null : user_id;
+            
             const [result] = await pool.query(
-                'INSERT INTO prayers (user_id, subject, message) VALUES (?, ?, ?)',
-                [user_id, subject, message]
+                'INSERT INTO prayers (name, user_id, subject, message, visibility, type) VALUES (?, ?, ?, ?, ?, ?)',
+                [name, processedUserId, subject, message, visibility, type]
             );
-
-            return { id: result.insertId, ...prayerData };
+    
+            return { 
+                id: result.insertId, 
+                ...prayerData,
+                name: name,
+                user_id: processedUserId
+            };
         } catch (error) {
             throw error;
         }
     }
-
     static async findById(id) {
         try {
             const [rows] = await pool.query(`
@@ -70,7 +81,7 @@ class PrayerModel {
                     u.name as user_name,
                     r.name as reviewer_name
                 FROM prayers p
-                JOIN users u ON p.user_id = u.id
+                LEFT JOIN users u ON p.user_id = u.id
                 LEFT JOIN users r ON p.reviewed_by = r.id
                 ORDER BY p.created_at DESC
                 LIMIT ? OFFSET ?`,
@@ -93,7 +104,7 @@ class PrayerModel {
         }
     }
 
-    static async getAllApproved(page = 1, limit = 10) {
+    static async getAllApprovedPrayers(page = 1, limit = 10) {
         try {
             const offset = (page - 1) * limit;
             
@@ -103,9 +114,49 @@ class PrayerModel {
                     u.name as user_name,
                     r.name as reviewer_name
                 FROM prayers p
-                JOIN users u ON p.user_id = u.id
+                LEFT JOIN users u ON p.user_id = u.id
                 LEFT JOIN users r ON p.reviewed_by = r.id
                 WHERE p.status = 'approved'
+                    AND p.type = 'prayer'
+                    AND p.visibility = 1
+                ORDER BY p.created_at DESC
+                LIMIT ? OFFSET ?`,
+                [limit, offset]
+            );
+    
+            const [total] = await pool.query(
+                'SELECT COUNT(*) as count FROM prayers WHERE status = "approved"'
+            );
+    
+            return {
+                prayers,
+                pagination: {
+                    total: total[0].count,
+                    page,
+                    limit,
+                    pages: Math.ceil(total[0].count / limit)
+                }
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async getAllApprovedPraises(page = 1, limit = 10) {
+        try {
+            const offset = (page - 1) * limit;
+            
+            const [prayers] = await pool.query(`
+                SELECT 
+                    p.*,
+                    u.name as user_name,
+                    r.name as reviewer_name
+                FROM prayers p
+                LEFT JOIN users u ON p.user_id = u.id
+                LEFT JOIN users r ON p.reviewed_by = r.id
+                WHERE p.status = 'approved'
+                    AND p.type = 'praise'
+                    AND p.visibility = TRUE
                 ORDER BY p.created_at DESC
                 LIMIT ? OFFSET ?`,
                 [limit, offset]

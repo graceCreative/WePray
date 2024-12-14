@@ -81,6 +81,11 @@ async function testUsers() {
                     name: 'role',
                     message: 'Select role:',
                     choices: ['member', 'coordinator', 'moderator', 'admin']
+                },
+                { type: 'list',
+                    name: 'status',
+                    message: 'Select status:',
+                    choices: ['active', 'pending']
                 }
             ]);
 

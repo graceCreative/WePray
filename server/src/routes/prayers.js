@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const PrayerController = require('../controllers/prayerController');
-const { isAuth, isCoordinator } = require('../middleware/auth');
+const { isAuth, isCoordinator, isAdmin } = require('../middleware/auth');
 const { validate, check } = require('../middleware/validate');
 
 const prayerValidations = {
@@ -20,9 +20,10 @@ const prayerValidations = {
   ]
 };
 
-router.post('/', isAuth, validate(prayerValidations.create), PrayerController.create);
+router.post('/', validate(prayerValidations.create), PrayerController.create);
 router.get('/', isAuth, isCoordinator, PrayerController.getAll);
-router.get('/approved', isAuth, validate(prayerValidations.approved),  PrayerController.getAllApproved);
+router.get('/approvedPrayers', validate(prayerValidations.approved),  PrayerController.getAllApprovedPrayers);
+router.get('/approvedPraises', validate(prayerValidations.approved),  PrayerController.getAllApprovedPraises);
 router.get('/stats', isAuth, isCoordinator, PrayerController.getStats);
 router.get('/pending', isAuth, isCoordinator, PrayerController.getPending);
 router.get('/:id', isAuth, PrayerController.getById);
