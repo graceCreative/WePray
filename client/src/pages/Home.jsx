@@ -60,7 +60,7 @@ const Home = () => {
             <li><Link to="/prayerWall" onClick={() => setIsDrawerOpen(false)}>Prayer Wall</Link></li>
             <li><Link to="/contact" onClick={() => setIsDrawerOpen(false)}>Contact Us</Link></li>
             <li><Link to="/donate" onClick={() => setIsDrawerOpen(false)}>Donate</Link></li>
-            <Link to="/prayerWall" className="cta" onClick={() => setIsDrawerOpen(false)}>Share Your Praise</Link>
+            <Link to="/praiseWall" className="cta" onClick={() => setIsDrawerOpen(false)}>Share Your Praise</Link>
           </ul>
         </div>
 
