@@ -1,0 +1,18 @@
+# Nixpacks configuration file
+
+[build]
+# Install dependencies
+cmd = "npm ci"
+
+[start]
+# Start command matching your package.json
+cmd = "npm start"
+
+# Specify Node.js version
+[environment]
+NIXPACKS_NODE_VERSION = "18"
+
+# Expose the port
+[[ports]]
+type = "http"
+value = 8000
