@@ -5,7 +5,6 @@
   "main": "app.js",
   "scripts": {
     "start": "node index.js",
-    // "dev": "nodemon index.js",
     "db:setup": "node src/scripts/setupDatabase.js",
     "db:reset": "node src/scripts/setupDatabase.js --reset",
     "test-models": "node src/scripts/modelTester.js"
