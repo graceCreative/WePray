@@ -1,13 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
-const routes = require('./routes');
+const routes = require('./src/routes');
 const passport = require('passport');
-const UserModel = require('./models/UserModel');
-const PrayerModel = require('./models/PrayerModel');
-const EventModel = require('./models/EventModel');
+const UserModel = require('./src/models/UserModel');
+const PrayerModel = require('./src/models/PrayerModel');
+const EventModel = require('./src/models/EventModel');
 require('dotenv').config();
-require('./config/passport');
+require('./src/config/passport');
 
 const app = express();
 
