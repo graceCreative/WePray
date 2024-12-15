@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL:  'wepray-production.up.railway.app/api'
+    baseURL:  'https://wepray-production.up.railway.app/api'
 });
 
 // Add token to requests
