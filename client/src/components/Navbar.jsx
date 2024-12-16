@@ -6,7 +6,7 @@ import '../App.css';
 import logo from "../assets/logo.png";
 
 const Navbar = () => {
-
+const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <>
