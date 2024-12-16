@@ -58,6 +58,7 @@ const Home = () => {
             <li><Link to="/" className="active" onClick={() => setIsDrawerOpen(false)}>Home</Link></li>
             <li><Link to="/about" onClick={() => setIsDrawerOpen(false)}>About Us</Link></li>
             <li><Link to="/prayerWall" onClick={() => setIsDrawerOpen(false)}>Prayer Wall</Link></li>
+            <li><Link to="/dashboard" onClick={() => setIsDrawerOpen(false)}>Dashboard</Link></li>
             <li><Link to="/contact" onClick={() => setIsDrawerOpen(false)}>Contact Us</Link></li>
             <li><Link to="/donate" onClick={() => setIsDrawerOpen(false)}>Donate</Link></li>
             <Link to="/praiseWall" className="cta" onClick={() => setIsDrawerOpen(false)}>Share Your Praise</Link>
