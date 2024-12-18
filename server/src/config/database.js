@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
-const urlDB = 'mysql://root:UxvtTIloGXGTAyZbAOkQMuFfpbdPIrFn@mysql.railway.internal:3306/railway'
+const urlDB = 'mysql://root:HrdXFDwqjZCJexESCWrYRdOwwFxpemyP@mysql.railway.internal:3306/wepray'
 
 // const pool = mysql.createPool({
 //     host: process.env.DB_HOST || 'localhost',
