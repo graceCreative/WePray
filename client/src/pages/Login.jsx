@@ -44,7 +44,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:8000/api/auth/google';
+        window.location.href = 'https://wepray-production.up.railway.app/api/auth/google';
     };
 
     return (
