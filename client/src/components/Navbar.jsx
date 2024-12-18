@@ -14,7 +14,7 @@ const [isDrawerOpen, setIsDrawerOpen] = useState(false);
         <nav className="nav">
         <div className="logo">
           <img src={logo} alt="WePray Logo" />
-          <h1>WePray</h1>
+          <h1>WiPray</h1>
         </div>
 
         <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>

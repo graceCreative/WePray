@@ -46,7 +46,7 @@ const Home = () => {
       <nav className="nav">
         <div className="logo">
           <img src={logo} alt="WePray Logo" />
-          <h1>WePray</h1>
+          <h1>WiPray</h1>
         </div>
 
         <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
@@ -88,7 +88,7 @@ const Home = () => {
             </div>
             <div className="mask">
               <p className="anim">
-                WePray platform provides a space for individuals to share their prayer requests and praises, inviting others to join in prayer or celebrate moments of gratitude.
+                WiPray platform provides a space for individuals to share their prayer requests and praises, inviting others to join in prayer or celebrate moments of gratitude.
               </p>
             </div>
             <div className="flex">
@@ -115,7 +115,7 @@ const Home = () => {
       <div className="about-section">
         <h1>About Us</h1>
         <p id="paragraph">
-          At WePray, we believe in the transformative power of prayer and the strength of a faith-driven community. Our platform allows individuals to share prayer requests and praises, inviting others to join in prayer or celebrate moments of gratitude. Whether you're seeking prayers or offering them to others, PrayerCircle brings believers together to support one another in faith. We aim to connect those in need of spiritual encouragement, fostering a space where everyone feels heard, uplifted, and united through prayer, as we strengthen our relationship with God through meaningful, heartfelt communion.
+          At WiPray, we believe in the transformative power of prayer and the strength of a faith-driven community. Our platform allows individuals to share prayer requests and praises, inviting others to join in prayer or celebrate moments of gratitude. Whether you're seeking prayers or offering them to others, PrayerCircle brings believers together to support one another in faith. We aim to connect those in need of spiritual encouragement, fostering a space where everyone feels heard, uplifted, and united through prayer, as we strengthen our relationship with God through meaningful, heartfelt communion.
         </p>
       </div>
 
@@ -232,7 +232,7 @@ const Home = () => {
         <div className="col1">
           <div className="logo">
             <img src={logo} alt="" />
-            <h1>WePray</h1>
+            <h1>WiPray</h1>
           </div>
           <b>Share Your Prayers, Uplift Your Soul</b>
         </div>
@@ -256,7 +256,7 @@ const Home = () => {
       </div>
 
       <div className="footer-copy">
-        <p>© 2024 WePray - All Rights Reserved</p>
+        <p>© 2024 WiPray - All Rights Reserved</p>
       </div>
 
 
