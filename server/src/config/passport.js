@@ -26,7 +26,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:8000/api/auth/google/callback", // Update for production
+            callbackURL: "https://wepray-production.up.railway.app/api/auth/google/callback", // Update for production
             scope: ['profile', 'email'], // Request user's profile and email
         },
         async (accessToken, refreshToken, profile, done) => {
