@@ -44,10 +44,12 @@ const Home = () => {
     <div>
 
       <nav className="nav">
-        <div className="logo">
-          <img src={logo} alt="WePray Logo" />
-          <h1>WiPray</h1>
-        </div>
+          <a href="/">
+            <div className="logo">
+              <img src={logo} alt="WePray Logo" />
+              <h1>WiPray</h1>
+            </div>
+          </a>
 
         <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
           <FontAwesomeIcon icon={isDrawerOpen ? faTimes : faBars} size="2x" />
