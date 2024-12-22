@@ -5,8 +5,6 @@ const { validate, check } = require('../middleware/validate');
 
 const prayerValidations = {
    create: [
-       check('subject').notEmpty().withMessage('Subject is required')
-           .isLength({ min: 3, max: 255 }).withMessage('Subject must be between 3 and 255 characters'),
        check('message').notEmpty().withMessage('Message is required')
            .isLength({ min: 10 }).withMessage('Message must be at least 10 characters')
    ],
@@ -26,7 +24,8 @@ router.get('/approvedPrayers', validate(prayerValidations.approved),  PrayerCont
 router.get('/approvedPraises', validate(prayerValidations.approved),  PrayerController.getAllApprovedPraises);
 router.get('/stats', isAuth, isCoordinator, PrayerController.getStats);
 router.get('/pending', isAuth, isCoordinator, PrayerController.getPending);
-router.get('/:id', isAuth, PrayerController.getById);
+router.get('/:id', PrayerController.getById);
+router.put('/:id/prayCount', PrayerController.updatePrayerCount);
 router.put('/:id/status', 
    isAuth, 
    isCoordinator, 

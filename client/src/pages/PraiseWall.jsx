@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import api from '../utils/axios';
 import PrayerCard from '../components/shared/PrayerCard';
+import {useNavigate} from 'react-router-dom'
 
 const PraiseWall = () => {
   const [visibility, setVisibility] = useState(true);
   const [prayerForm, setPrayerForm] = useState({
-    subject: '',
+    email: '',
+    phone: '',
     message: '',
     name: '',
     visibility: visibility,
@@ -18,6 +20,7 @@ const PraiseWall = () => {
   const [success, setSuccess] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [prayers, setPrayers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardData();
@@ -49,7 +52,6 @@ const fetchDashboardData = async () => {
       console.log(submissionData);
       await api.post('/prayers', submissionData);
       setPrayerForm({
-        subject: '',
         message: '',
         name: '',
         is_anonymous: false
@@ -76,7 +78,7 @@ const fetchDashboardData = async () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-2xl mt-16 mx-auto p-6">
+      <div className="max-w-4xl mt-16 mx-auto p-6">
         {/* <h1 className="text-3xl font-bold mb-6">Share Your Prayer Request</h1> */}
         
         {error && (
@@ -93,11 +95,16 @@ const fetchDashboardData = async () => {
 
         {!showForm ? (
           <div className='flex flex-col w-full py-4'>
-            <div>
+            <div className='flex flex-row'>
             <button
             onClick={() => setShowForm(true)} 
             className="px-3 py-1 py-2 px-4 w-50 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]">
               Submit a Praise
+            </button>
+            <button
+            onClick={() => navigate('/prayerWall')} 
+            className="px-3 py-1 py-2 px-4 w-50 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]">
+              Prayers
             </button>
             </div>
             
@@ -105,8 +112,11 @@ const fetchDashboardData = async () => {
             {prayers.map((prayer) => (
               <PrayerCard
                 key={prayer.id}
-                title={prayer.name}
-                description={prayer.message}
+                createdAt={prayer.created_at}
+                userName={prayer.name}
+                content={prayer.message}
+                prayerID={prayer.id}
+                type={prayer.type}
               />
             ))}
             </div>
@@ -122,30 +132,47 @@ const fetchDashboardData = async () => {
               id="name"
               name="name"
               value={prayerForm.name}
-              placeholder='skip for anonymous prayer'
+              placeholder='skip for anonymous praise'
               onChange={handleChange}
               className="mt-1 py-1 px-1 block w-full rounded-md bg-white border-2 border-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-              Prayer Subject
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
             </label>
             <input
               type="text"
-              id="subject"
-              name="subject"
-              value={prayerForm.subject}
+              id="email"
+              name="email"
+              value={prayerForm.email}
+              placeholder='optional'
               onChange={handleChange}
-              required
               className="mt-1 py-1 px-1 block w-full bg-white rounded-md border-2 border-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
 
           <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              Phone
+            </label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value={prayerForm.phone}
+              placeholder='optional'
+              onChange={handleChange}
+              className="mt-1 py-1 px-1 block w-full bg-white rounded-md border-2 border-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+          </div>
+
+          
+
+          <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-              Prayer Message
+              Praise Message
             </label>
             <textarea
               id="message"
@@ -173,13 +200,21 @@ const fetchDashboardData = async () => {
             
           </div>
 
-          <button
-            type="submit"
-            onClick={() => setShowForm(false)}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]"
-          >
-            Submit Praise
-          </button>
+          <div className='flex flex-row'>
+            <button
+              type="submit"
+              className="w-md flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]"
+            >
+              Submit Praise Request
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="w-md flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]"
+            >
+              cancel
+            </button>
+            </div>
         </form>
         )}
         
