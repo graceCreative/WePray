@@ -156,7 +156,7 @@ const fetchDashboardData = async () => {
               <input
                 type="text"
                 id="email"
-                name="eamil"
+                name="email"
                 value={prayerForm.email}
                 placeholder='optional'
                 onChange={handleChange}
