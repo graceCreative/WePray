@@ -563,7 +563,7 @@ const Dashboard = () => {
         <div className="flex h-screen overflow-hidden">
             {/* Sidebar */}
             <div className="w-1/4 bg-gray-200 p-4">
-            <a href="/"><div className="text-lg font-bold mb-0">WePray</div></a>
+            <a href="/"><div className="text-lg font-bold mb-0">WiPray</div></a>
                 {user.role === 'admin' && <div className="text-sm font-medium mb-8 ">Admin Panel</div>}
                 {user.role === 'coordinator' && <div className="text-sm font-medium mb-4">Coordinator</div>}
                 <ul>
