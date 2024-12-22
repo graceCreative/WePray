@@ -47,7 +47,7 @@ const PrayerCard = ({
 
   const prayerDetails = {
     message: content,
-    link: `https://wepray-test.netlify.app/prayers/${prayerID}`, 
+    link: `https://wipray.com/prayers/${prayerID}`, 
   };
 
   const facebookShare = (prayerDetails) => {
