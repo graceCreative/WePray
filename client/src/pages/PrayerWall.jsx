@@ -157,8 +157,8 @@ const fetchDashboardData = async () => {
                 type="text"
                 id="email"
                 name="eamil"
-                placeholder='optional'
                 value={prayerForm.email}
+                placeholder='optional'
                 onChange={handleChange}
                 className="mt-1 py-1 px-1 block w-full bg-white rounded-md border-2 border-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
