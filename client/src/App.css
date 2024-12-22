@@ -126,6 +126,17 @@ nav ul a.active{
   color: #fff;
 }
 
+.cta a {
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+}
+
+.cta a:hover {
+  color: inherit;
+}
+
 .nav-drawer{
   width: 70%;
   position: absolute;
