@@ -143,6 +143,49 @@ class PrayerController {
        }
    }
 
+   static async updatePrayerCount(req, res) {
+    try{
+        const { id } = req.params;
+        const { updatedCount } = req.body.data;
+        const numericPrayCount = Number(updatedCount);
+        
+        if (isNaN(numericPrayCount)) {
+            console.log(numericPrayCount);
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid prayer count'
+            });
+        }
+        const updated = await PrayerModel.updatePrayerCount(id, updatedCount);
+        console.log("type of count received in backend",typeof numericPrayCount);
+        res.json({
+            success: true,
+            data: updated
+        })
+    }  catch (error) {
+        console.error("backend Error:", error.message)
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+   }
+
+//    static async updateReportedCount(req, res) {
+//     try{
+//         const { reportCount } = req.body;
+//         const updated = await PrayerModel.updateReportedCount(req.params.id, reportCount);
+//         res.json({
+//             success: true,
+//             data: updated
+//         })
+//     }  catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             message: error.message
+//         });
+//     }
+//    }
 
    static async delete(req, res) {
     try {

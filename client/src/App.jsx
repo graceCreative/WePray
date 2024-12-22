@@ -11,6 +11,8 @@ import Home from './pages/Home';
 import About from './pages/About';
 import PrayerWall from './pages/PrayerWall';
 import PraiseWall from './pages/PraiseWall';
+import ReportForm from './components/ReportForm';
+import PrayerDetails from './components/PrayerDetails';
 import Contact from './pages/Contact';
 import Donate from './pages/Donate';
 import SmoothScroll from './components/SmoothScroll';
@@ -37,6 +39,8 @@ const App = () => {
                             <Route path="/praiseWall" element={<PraiseWall />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/donate" element={<Donate />} />
+                            <Route path="/prayers/:id/report" element={<ReportForm />}/>
+                            <Route path="/prayers/:id" element={<PrayerDetails />}/>
 
                             {/* Protected Routes */}
                             <Route

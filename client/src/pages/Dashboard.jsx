@@ -1,6 +1,7 @@
 // src/pages/Dashboard.jsx
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import api from '../utils/axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -17,6 +18,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     // States
     const [prayers, setPrayers] = useState([]);
@@ -174,6 +176,16 @@ const Dashboard = () => {
         }
     };
 
+    const handlePrayerDelete = async (prayerId) => {
+        try {
+            await api.delete(`/prayers/${prayerId}`);
+            fetchDashboardData();
+        } catch (error) {
+            console.log(error);
+            setError('Failed to update prayer status');
+        }
+    }
+
     const handleRoleChange = async (userId, newRole) => {
         try {
             await api.put(`/users/role/${userId}`, { role: newRole });
@@ -270,7 +282,8 @@ const Dashboard = () => {
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Report Count</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                         {(user.role === 'admin' || user.role === 'coordinator') && (
@@ -282,7 +295,7 @@ const Dashboard = () => {
                                     {prayers.slice(0, 5).map((prayer) => (
                                         <tr key={prayer.id}>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {prayer.user_name || prayer.user?.name || 'Anonymous'}
+                                                {prayer.name}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
@@ -291,7 +304,8 @@ const Dashboard = () => {
                                                     year: 'numeric'
                                                 }) : 'N/A'}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{prayer.subject}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{prayer.report_count}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{prayer.type}</td>
                                             <td className="px-6 py-4 whitespace-normal max-w-xs truncate">
                                                 {prayer.message}
                                             </td>
@@ -304,7 +318,7 @@ const Dashboard = () => {
                                                     {prayer.status}
                                                 </span>
                                             </td>
-                                            {((user.role === 'admin' || user.role === 'coordinator')&& prayer.status!=='approved')  && (
+                                            {(user.role === 'admin' || user.role === 'coordinator')  && (
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                     {prayer.status !== 'approved' && (
                                                         <button
@@ -315,10 +329,10 @@ const Dashboard = () => {
                                                         </button>
                                                     )}
                                                     <button
-                                                        onClick={() => handlePrayerStatusUpdate(prayer.id, 'rejected')}
+                                                        onClick={() => handlePrayerDelete(prayer.id)}
                                                         className="px-3 py-1 bg-red-500 text-white rounded-md"
                                                     >
-                                                        Reject
+                                                        Delete
                                                     </button>
                                                 </td>
                                             )}
@@ -345,7 +359,8 @@ const Dashboard = () => {
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prayer Subject</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Report Count</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                     {(user.role === 'admin' || user.role === 'coordinator') && (
@@ -362,7 +377,8 @@ const Dashboard = () => {
                                                     month: 'short',
                                                     year: 'numeric'
                                                 }) : 'N/A'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{prayer.subject}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{prayer.report_count}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{prayer.type}</td>
                                         <td className="px-6 py-4 whitespace-normal max-w-xs truncate">{prayer.message}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
@@ -372,7 +388,7 @@ const Dashboard = () => {
                                                 {prayer.status}
                                             </span>
                                         </td>
-                                        {((user.role === 'admin' || user.role === 'coordinator') && prayer.status !== 'approved') && (
+                                        {(user.role === 'admin' || user.role === 'coordinator') && (
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 {prayer.status !== 'approved' && (
                                                     <button
@@ -383,10 +399,10 @@ const Dashboard = () => {
                                                     </button>
                                                 )}
                                                 <button
-                                                    onClick={() => handlePrayerStatusUpdate(prayer.id, 'rejected')}
+                                                    onClick={() => handlePrayerDelete(prayer.id)}
                                                     className="px-3 py-1 bg-red-500 text-white rounded-md"
                                                 >
-                                                    Reject
+                                                    Delete
                                                 </button>
                                             </td>
                                         )}
@@ -552,11 +568,18 @@ const Dashboard = () => {
                 {user.role === 'coordinator' && <div className="text-sm font-medium mb-4">Coordinator</div>}
                 <ul>
                     <li 
+                        className={`mb-2 p-2 rounded cursor-pointer `}
+                        onClick={() => navigate('/')}
+                        >
+                        Home
+                    </li>
+                    <li 
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'dashboard' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('dashboard')}
                     >
                         Dashboard
                     </li>
+                    
                     {(user.role === 'admin' || user.role === 'coordinator') && (
                         <li 
                             className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'manage_users' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}

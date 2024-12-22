@@ -6,6 +6,7 @@ const passport = require('passport');
 const UserModel = require('./src/models/UserModel');
 const PrayerModel = require('./src/models/PrayerModel');
 const EventModel = require('./src/models/EventModel');
+const PReportModel = require('./src/models/PReportModel')
 require('dotenv').config();
 require('./src/config/passport');
 
@@ -16,6 +17,7 @@ async function initializeDatabase() {
         await UserModel.createSchema();
         await PrayerModel.createSchema();
         await EventModel.createSchema();
+        await PReportModel.createSchema();
         console.log('All database schemas created successfully');
     } catch (error) {
         console.error('Database initialization failed:', error);
@@ -26,7 +28,7 @@ async function initializeDatabase() {
 async function initializeServer() {
     try {
         await initializeDatabase();
-        const PORT = process.env.PORT || 5000;
+        const PORT = process.env.PORT || 8000;
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     } catch (error) {
         console.error('Server initialization failed:', error);

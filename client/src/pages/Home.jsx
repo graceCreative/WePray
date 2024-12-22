@@ -58,10 +58,10 @@ const Home = () => {
             <li><Link to="/" className="active" onClick={() => setIsDrawerOpen(false)}>Home</Link></li>
             <li><Link to="/about" onClick={() => setIsDrawerOpen(false)}>About Us</Link></li>
             <li><Link to="/prayerWall" onClick={() => setIsDrawerOpen(false)}>Prayer Wall</Link></li>
+            <li><Link to="/praiseWall" onClick={() => setIsDrawerOpen(false)}>Praises</Link></li>
             <li><Link to="/dashboard" onClick={() => setIsDrawerOpen(false)}>Dashboard</Link></li>
             <li><Link to="/contact" onClick={() => setIsDrawerOpen(false)}>Contact Us</Link></li>
-            <li><Link to="/donate" onClick={() => setIsDrawerOpen(false)}>Donate</Link></li>
-            <Link to="/praiseWall" className="cta" onClick={() => setIsDrawerOpen(false)}>Share Your Praise</Link>
+            <Link to="https://www.paypal.com/donate/?hosted_button_id=BXQLKAWHSRFBN" className="cta" onClick={() => setIsDrawerOpen(false)}>Donate</Link>
           </ul>
         </div>
 
@@ -69,11 +69,11 @@ const Home = () => {
           <li><Link to="/" className="active">Home</Link></li>
           <li><Link to="/about">About Us</Link></li>
           <li><Link to="/prayerWall">Prayer Wall</Link></li>
+          <li><Link to="/praiseWall">Praises</Link></li>
           <li><Link to="/dashboard">Dashboard</Link></li>
           <li><Link to="/contact">Contact Us</Link></li>
-          <li><Link to="/donate">Donate</Link></li>
         </ul>
-        <Link to="/praiseWall" className="cta">Share Your Praise</Link>
+        <Link to="https://www.paypal.com/donate/?hosted_button_id=BXQLKAWHSRFBN" className="cta">Donate</Link>
       </nav>
 
       {isDrawerOpen && (
@@ -167,7 +167,7 @@ const Home = () => {
           <h2>Share Faith, Earn Rewards</h2>
           <br />
           <p>
-            At WePray, we believe in spreading the power of prayer far and wide. By joining our affiliate program, you can help grow our compassionate community while earning rewards. As a WePray affiliate, you’ll have the opportunity to share the platform with your network and inspire others to connect, pray, and uplift one another.
+            At WiPray, we believe in spreading the power of prayer far and wide. By joining our affiliate program, you can help grow our compassionate community while earning rewards. As a WiPray affiliate, you’ll have the opportunity to share the platform with your network and inspire others to connect, pray, and uplift one another.
           </p>
         </div>
         <div className="how-right">

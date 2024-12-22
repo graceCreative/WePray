@@ -7,12 +7,15 @@ class PrayerModel {
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(255),
                 user_id INT,
-                subject VARCHAR(255) NOT NULL,
+                email VARCHAR(255),
+                phone VARCHAR(20),
                 message TEXT NOT NULL,
                 status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
                 visibility BOOL DEFAULT True,
                 type ENUM('prayer', 'praise') DEFAULT 'prayer',
                 reviewed_by INT,
+                pray_count INT DEFAULT 0,
+                report_count INT DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id),
@@ -30,7 +33,7 @@ class PrayerModel {
     }
 
     static async create(prayerData) {
-        const { name, user_id, subject, message, is_anonymous, visibility,
+        const { name, email, user_id, phone, message, is_anonymous, visibility,
             type } = prayerData;
         
         try {
@@ -38,8 +41,8 @@ class PrayerModel {
             const processedUserId = is_anonymous ? null : user_id;
             
             const [result] = await pool.query(
-                'INSERT INTO prayers (name, user_id, subject, message, visibility, type) VALUES (?, ?, ?, ?, ?, ?)',
-                [name, processedUserId, subject, message, visibility, type]
+                'INSERT INTO prayers (name, user_id, email, phone, message, visibility, type) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [name, processedUserId, email, phone, message, visibility, type]
             );
     
             return { 
@@ -60,7 +63,7 @@ class PrayerModel {
                     u.name as user_name,
                     r.name as reviewer_name
                 FROM prayers p
-                JOIN users u ON p.user_id = u.id
+                LEFT JOIN users u ON p.user_id = u.id
                 LEFT JOIN users r ON p.reviewed_by = r.id
                 WHERE p.id = ?`,
                 [id]
@@ -199,6 +202,29 @@ class PrayerModel {
         }
     }
 
+    // static async updateReportedCount(id, reportedCount){
+    //     try {
+    //         const [updatedReportCount] = await pool.query(
+    //             'UPDATE prayers SET reported_count = ? WHERE id = ?',
+    //             [reportedCount, id]
+    //         );
+    //         return updatedReportCount.affectedRows > 0;
+    //     } catch (error){
+    //         throw error;
+    //     }
+    // }
+    static async updatePrayerCount(id, prayerCount){
+        try {
+            const [updatedPrayer] = await pool.query(
+                'UPDATE prayers SET pray_count = ? WHERE id = ?',
+                [prayerCount, id]
+            );
+            return updatedPrayer.affectedRows > 0;
+        } catch (error){
+            throw error;
+        }
+    }
+
     static async getStats() {
         try {
             const [stats] = await pool.query(`
@@ -218,14 +244,21 @@ class PrayerModel {
 
 
     static async delete(id) {
+        const connection = await pool.getConnection();
         try {
-            const [result] = await pool.query(
+            await connection.beginTransaction();
+            await connection.query('DELETE FROM prayer_reports WHERE prayer_id = ?', [id]);
+            const [result] = await connection.query(
                 'DELETE FROM prayers WHERE id = ?',
                 [id]
             );
+            await connection.commit()
             return result.affectedRows > 0;
         } catch (error) {
+            await connection.rollback();
             throw error;
+        }finally{
+            connection.release();
         }
     }
 }
