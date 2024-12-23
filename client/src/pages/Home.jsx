@@ -17,6 +17,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { useState } from "react";
+import Footer from "../components/Footer";
 
 const Home = () => {
 
@@ -229,37 +230,7 @@ const Home = () => {
       </div>
 
 
-      {/* Footer */}
-      <div className="footer">
-        <div className="col1">
-          <div className="logo">
-            <img src={logo} alt="" />
-            <h1>WiPray</h1>
-          </div>
-          <b>Share Your Prayers, Uplift Your Soul</b>
-        </div>
-        <div className="col2">
-          <b>Quick Links</b> <br />
-          <a href="/">Home</a> <br />
-          <a href="">About Us</a> <br />
-          <a href="">Prayer Wall</a> <br />
-          <a href="">Resources</a> <br />
-          <a href="">Contact Us</a>
-        </div>
-        <div className="col2">
-          <b>Other</b> <br />
-          <a href="">Become an Affilate</a> <br />
-          <a href="">Partners Page</a> <br />
-        </div>
-        <div className="col3">
-          <b>Contact Us</b> <br />
-          <b>Socila Links</b>
-        </div>
-      </div>
-
-      <div className="footer-copy">
-        <p>© 2024 WiPray - All Rights Reserved</p>
-      </div>
+      <Footer/>
 
 
 

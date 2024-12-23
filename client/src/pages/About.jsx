@@ -3,26 +3,13 @@ import { Outlet, Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import about from "../assets/cta.png";
 import "../App.css"; // Your main CSS
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 function About() {
   return (
     <div>
-      <header>
-        <nav className="nav">
-          <div className="logo">
-            <img src={logo} alt="WePray Logo" />
-            <h1>WePray</h1>
-          </div>
-          <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/about" className="active">About Us</Link></li>
-          <li><Link to="/prayerWall">Prayer Wall</Link></li>
-          <li><Link to="/contact">Contact Us</Link></li>
-          <li><Link to="/donate">Donate</Link></li>
-        </ul>
-        <Link to="/prayerWall" className="cta">Share Your Praise</Link>
-        </nav>
-      </header>
+      <Navbar/>
 
       <main>
         <section className="about-img">
@@ -58,37 +45,7 @@ function About() {
         </section>
       </main>
 
-      {/* Footer */}
-      <div className="footer">
-        <div className="col1">
-          <div className="logo">
-            <img src={logo} alt="" />
-            <h1>WePray</h1>
-          </div>
-          <b>Share Your Prayers, Uplift Your Soul</b>
-        </div>
-        <div className="col2">
-          <b>Quick Links</b> <br />
-          <a href="/">Home</a> <br />
-          <a href="">About Us</a> <br />
-          <a href="">Prayer Wall</a> <br />
-          <a href="">Resources</a> <br />
-          <a href="">Contact Us</a>
-        </div>
-        <div className="col2">
-          <b>Other</b> <br />
-          <a href="">Become an Affilate</a> <br />
-          <a href="">Partners Page</a> <br />
-        </div>
-        <div className="col3">
-          <b>Contact Us</b> <br />
-          <b>Socila Links</b>
-        </div>
-      </div>
-
-      <div className="footer-copy">
-        <p>© 2024 WePray - All Rights Reserved</p>
-      </div>
+      <Footer/>
     </div>
   );
 }
