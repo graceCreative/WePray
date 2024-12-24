@@ -18,6 +18,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [users, setUsers] = useState([]);
+    const [prayerMessage, setPrayerMessage] = useState("");
+    const [prayerID, setPrayerID] = useState(null);
     const navigate = useNavigate();
 
     // States
@@ -32,6 +34,7 @@ const Dashboard = () => {
     // Modal states and forms
     const [showPrayerForm, setShowPrayerForm] = useState(false);
     const [showEventForm, setShowEventForm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
     const [prayerForm, setPrayerForm] = useState({
         subject: '',
         message: ''
@@ -106,7 +109,7 @@ const Dashboard = () => {
             }
         }
     };
-    
+
     const handleDeleteUser = async (userId) => {
         try {
             await api.delete(`/users/delete/${userId}`);
@@ -174,6 +177,34 @@ const Dashboard = () => {
             console.log(error);
             setError('Failed to update prayer status');
         }
+    };
+
+    const handlePrayerMessageUpdate = async (prayerId, message) => {
+        try {
+            await api.put(`/prayers/${prayerId}/message`, { message });
+            setShowEditForm(false);
+            fetchDashboardData();
+        } catch (error) {
+            console.log(error);
+            setError('Failed to update prayer status');
+        }
+    };
+
+    const handlePrayerEdit = async (prayerId) => {
+        try {
+            setPrayerID(prayerId);
+            const prayerData = await api.get(`/prayers/${prayerId}`);
+            console.log(prayerData.data.data.message);
+            setPrayerMessage(prayerData.data.data.message)
+            setShowEditForm(true);
+        } catch (error) {
+            console.log(error);
+            setError('Failed to update prayer status');
+        }
+    };    
+
+    const handleMessageChange = (e) => {
+        setPrayerMessage(e.target.value);
     };
 
     const handlePrayerDelete = async (prayerId) => {
@@ -319,20 +350,26 @@ const Dashboard = () => {
                                                 </span>
                                             </td>
                                             {(user.role === 'admin' || user.role === 'coordinator')  && (
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                <td className="px-6 py-4 whitespace-nowrap flex flex-col text-sm">
                                                     {prayer.status !== 'approved' && (
                                                         <button
                                                             onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
-                                                            className="mr-2 px-3 py-1 bg-green-500 text-white rounded-md"
+                                                            className=" px-3 py-1 bg-green-500 text-white text-xs rounded-md"
                                                         >
                                                             Approve
                                                         </button>
                                                     )}
                                                     <button
                                                         onClick={() => handlePrayerDelete(prayer.id)}
-                                                        className="px-3 py-1 bg-red-500 text-white rounded-md"
+                                                        className="px-3 py-1 bg-red-500 text-white text-xs rounded-md"
                                                     >
                                                         Delete
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handlePrayerEdit(prayer.id)}
+                                                        className="px-4 py-1 bg-yellow-500 text-xs text-white rounded-md"
+                                                    >
+                                                        Edit
                                                     </button>
                                                 </td>
                                             )}
@@ -389,20 +426,26 @@ const Dashboard = () => {
                                             </span>
                                         </td>
                                         {(user.role === 'admin' || user.role === 'coordinator') && (
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                            <td className="px-6 py-4 whitespace-nowrap text-xs flex flex-col">
                                                 {prayer.status !== 'approved' && (
                                                     <button
                                                         onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
-                                                        className="mr-2 px-3 py-1 bg-green-500 text-white rounded-md"
+                                                        className="px-3 py-1 bg-green-500 text-white rounded-md"
                                                     >
                                                         Approve
                                                     </button>
                                                 )}
                                                 <button
                                                     onClick={() => handlePrayerDelete(prayer.id)}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded-md"
+                                                    className="px-3 py-1 bg-red-500 text-white text-xs rounded-md"
                                                 >
                                                     Delete
+                                                </button>
+                                                <button
+                                                    onClick={() => handlePrayerEdit(prayer.id)}
+                                                    className="px-4 py-1 bg-yellow-500 text-xs text-white rounded-md"
+                                                >
+                                                    Edit
                                                 </button>
                                             </td>
                                         )}
@@ -511,7 +554,7 @@ const Dashboard = () => {
                                                 type="datetime-local"
                                                 value={eventForm.start_time}
                                                 onChange={(e) => setEventForm({...eventForm, start_time: e.target.value})}
-                                                className="mt-1 p-1 bg-white block w-full rounded-md border-gray-300 shadow-md"
+                                                className="mt-1 p-1 bg-gray-300 block w-full rounded-md border-gray-300 shadow-md"
                                                 required
                                             />
                                         </div>
@@ -521,7 +564,7 @@ const Dashboard = () => {
                                                 type="datetime-local"
                                                 value={eventForm.end_time}
                                                 onChange={(e) => setEventForm({...eventForm, end_time: e.target.value})}
-                                                className="mt-1 p-1 bg-white block w-full rounded-md border-gray-300 shadow-md "
+                                                className="mt-1 p-1 bg-gray-300 block w-full rounded-md border-gray-300 shadow-md "
                                                 required
                                             />
                                         </div>
@@ -632,6 +675,45 @@ const Dashboard = () => {
                 {/* Dynamic Content based on active tab */}
                 {renderContent()}
             </div>
+            {/* Edit Prayer Message Modal */}
+                {showEditForm && (
+                    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+                        <div className="bg-white p-8 rounded-lg w-1/2">
+                            <h3 className="text-lg font-medium mb-4">Edit Prayer Message</h3>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                handlePrayerMessageUpdate(prayerID, prayerMessage);
+                                setShowEditForm(false);
+                            }} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Message</label>
+                                    <textarea
+                                        value={prayerMessage}
+                                        onChange={handleMessageChange}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                                        rows={4}
+                                        required
+                                    />
+                                </div>
+                                <div className="flex justify-end space-x-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEditForm(false)}
+                                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="bg-[#409F9C] text-white px-4 py-2 rounded-md"
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
         </div>
     );
 };
