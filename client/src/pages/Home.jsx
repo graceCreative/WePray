@@ -23,6 +23,32 @@ const Home = () => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+
+  const [prayerCount, setPrayerCount] = useState(0);
+  const [praiseCount, setPraiseCount] = useState(0);
+
+  useEffect(() => {
+    fetchPrayerData();
+  }, []);
+
+  const fetchPrayerData = async () => {
+    try {
+      // Fetch prayer count
+      const prayersResponse = await api.get("/prayers/approvedPrayers");
+      const praisesResponse = await api.get("/prayers/approvedPraises");
+
+      const fetchedPrayerCount = prayersResponse.data?.data?.prayers?.length || 0;
+      const fetchedPraiseCount = praisesResponse.data?.data?.prayers?.length || 0;
+
+      setPrayerCount(fetchedPrayerCount);
+      setPraiseCount(fetchedPraiseCount);
+    } catch (error) {
+      console.error("Error fetching prayer data:", error);
+    }
+  };
+
+
+
   const testimonials = [
     {
       name: "John Deo",
@@ -41,16 +67,18 @@ const Home = () => {
     },
   ];
 
+
+
   return (
     <div>
 
       <nav className="nav">
-          <a href="/">
-            <div className="logo">
-              <img src={logo} alt="WePray Logo" />
-              <h1>WiPray</h1>
-            </div>
-          </a>
+        <a href="/">
+          <div className="logo">
+            <img src={logo} alt="WePray Logo" />
+            <h1>WiPray</h1>
+          </div>
+        </a>
 
         <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
           <FontAwesomeIcon icon={isDrawerOpen ? faTimes : faBars} size="2x" />
@@ -102,12 +130,13 @@ const Home = () => {
 
           <div className="numbers mask">
             <div className="number anim">
-              <h3>1,800+</h3>Prayers Prayed
+              <h3>{prayerCount.toLocaleString()}+</h3>Prayers Prayed
             </div>
             <div className="number anim">
-              <h3>1,500+</h3>Praise Submited
+              <h3>{praiseCount.toLocaleString()}+</h3>Praise Submitted
             </div>
           </div>
+
         </div>
         <img src={heroImg} className="leftAnim" alt="Hero" />
         <div className="circle"></div>
@@ -174,7 +203,7 @@ const Home = () => {
           </p>
         </div>
         <div className="how-right">
-          
+
         </div>
         <div className="circle2"></div>
       </div>
@@ -221,16 +250,16 @@ const Home = () => {
             </SwiperSlide>
           ))}
           <div className="prev">
-          <FontAwesomeIcon icon={faAngleLeft} />
+            <FontAwesomeIcon icon={faAngleLeft} />
           </div>
           <div className="next">
-          <FontAwesomeIcon icon={faAngleRight} style={{ color: '#fffff' }} />
+            <FontAwesomeIcon icon={faAngleRight} style={{ color: '#fffff' }} />
           </div>
         </Swiper>
       </div>
 
 
-      <Footer/>
+      <Footer />
 
 
 

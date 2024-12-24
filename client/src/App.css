@@ -950,6 +950,10 @@ textarea {
   font-size: 2.5rem !important;
 }
 
+.soon-section{
+  height: 80vh !important;
+}
+
 .container .circle{
   position: absolute;
   top: 10%;
