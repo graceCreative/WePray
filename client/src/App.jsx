@@ -15,6 +15,7 @@ import ReportForm from './components/ReportForm';
 import PrayerDetails from './components/PrayerDetails';
 import Contact from './pages/Contact';
 import Donate from './pages/Donate';
+import ComingSoon from './pages/ComingSoon';
 import SmoothScroll from './components/SmoothScroll';
 import "./App.css"; // Your main CSS
 
@@ -39,6 +40,7 @@ const App = () => {
                             <Route path="/praiseWall" element={<PraiseWall />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/donate" element={<Donate />} />
+                            <Route path="/comingSoon" element={<ComingSoon />} />
                             <Route path="/prayers/:id/report" element={<ReportForm />}/>
                             <Route path="/prayers/:id" element={<PrayerDetails />}/>
 

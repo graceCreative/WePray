@@ -936,3 +936,27 @@ textarea {
     width: 100%;
   }
 }
+
+
+.comingImg{
+  width: 200px;
+  height: 200px;
+  margin-top: 5rem;
+  border-radius: 100px;
+  object-fit: cover;
+}
+.comingText{
+  color: #007f7b;
+  font-size: 2.5rem !important;
+}
+
+.container .circle{
+  position: absolute;
+  top: 10%;
+  left: -10%;
+  width: 200px !important;
+  height: 200px !important;
+
+
+
+}
