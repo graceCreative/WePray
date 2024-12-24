@@ -18,6 +18,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { useState, useEffect } from "react";
 import Footer from "../components/Footer";
+import api from "../utils/axios";
 
 const Home = () => {
 
