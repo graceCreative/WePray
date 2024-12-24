@@ -95,7 +95,7 @@ const Home = () => {
               </p>
             </div>
             <div className="flex">
-              <div className="cta"><Link to="/prayerWall">Join a Prayer Community.</Link></div>
+              <div className="cta"><Link to="/comingSoon">Join a Prayer Community.</Link></div>
               <div className="cta"><Link to="/prayerWall">Start Praying Today.</Link></div>
             </div>
           </div>
@@ -105,7 +105,7 @@ const Home = () => {
               <h3>1,800+</h3>Prayers Prayed
             </div>
             <div className="number anim">
-              <h3>1,500+</h3>Prayers Answered
+              <h3>1,500+</h3>Praise Submited
             </div>
           </div>
         </div>
