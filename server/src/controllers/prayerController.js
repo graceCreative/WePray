@@ -102,6 +102,38 @@ class PrayerController {
        }
    }
 
+   static async updateMessage(req, res) {
+    try {
+        const { message } = req.body;
+        
+        if (!message) {
+            return res.status(400).json({
+                success: false,
+                message: 'Message is required'
+            });
+        }
+
+        const updatedPrayer = await PrayerModel.updateMessage(req.params.id, message);
+        
+        if (!updatedPrayer) {
+            return res.status(404).json({
+                success: false,
+                message: 'Prayer request not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: updatedPrayer,
+            message: 'Prayer message updated successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
    static async updateStatus(req, res) {
        try {
            const { id } = req.params;

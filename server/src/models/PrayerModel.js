@@ -74,6 +74,23 @@ class PrayerModel {
         }
     }
 
+    static async updateMessage(id, newMessage) {
+        try {
+            const [result] = await pool.query(
+                'UPDATE prayers SET message = ? WHERE id = ?',
+                [newMessage, id]
+            );
+            
+            if (result.affectedRows === 0) {
+                throw new Error('Prayer not found');
+            }
+    
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async getAll(page = 1, limit = 10) {
         try {
             const offset = (page - 1) * limit;

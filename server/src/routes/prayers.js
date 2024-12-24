@@ -26,6 +26,7 @@ router.get('/stats', isAuth, isCoordinator, PrayerController.getStats);
 router.get('/pending', isAuth, isCoordinator, PrayerController.getPending);
 router.get('/:id', PrayerController.getById);
 router.put('/:id/prayCount', PrayerController.updatePrayerCount);
+router.put('/:id/message', isAuth, isAdmin, PrayerController.updateMessage);
 router.put('/:id/status', 
    isAuth, 
    isCoordinator, 

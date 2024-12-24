@@ -6,8 +6,6 @@ const { validate, check } = require('../middleware/validate');
 const eventValidations = {
    create: [
        check('title').notEmpty().withMessage('Title is required'),
-       check('event_type').isIn(['live_prayer', 'other'])
-           .withMessage('Event type must be either live_prayer or other'),
        check('start_time').isISO8601().withMessage('Valid start time is required'),
        check('end_time').isISO8601()
            .withMessage('Valid end time is required')
