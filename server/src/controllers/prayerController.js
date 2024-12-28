@@ -26,7 +26,7 @@ class PrayerController {
        try {
            
            const prayers = await PrayerModel.getAll();
-           
+           console.log("prayerWall", prayers);
            res.json({
                success: true,
                data: prayers
