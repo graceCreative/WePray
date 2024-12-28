@@ -32,6 +32,7 @@ class PrayerController {
                data: prayers
            });
        } catch (error) {
+            console.log("error in getAll", error);
            res.status(500).json({
                success: false,
                message: error.message
