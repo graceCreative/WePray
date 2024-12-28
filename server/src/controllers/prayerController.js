@@ -24,10 +24,8 @@ class PrayerController {
 
    static async getAll(req, res) {
        try {
-           const page = parseInt(req.query.page) || 1;
-           const limit = parseInt(req.query.limit) || 10;
            
-           const prayers = await PrayerModel.getAll(page, limit);
+           const prayers = await PrayerModel.getAll();
            
            res.json({
                success: true,
@@ -43,10 +41,8 @@ class PrayerController {
 
    static async getAllApprovedPrayers(req, res) {
         try {
-            const page = parseInt(req.query.page) || 1;
-            const limit = parseInt(req.query.limit) || 10;
             
-            const prayers = await PrayerModel.getAllApprovedPrayers(page, limit);
+            const prayers = await PrayerModel.getAllApprovedPrayers();
             
             res.json({
                 success: true,
@@ -62,10 +58,7 @@ class PrayerController {
 
     static async getAllApprovedPraises(req, res) {
         try {
-            const page = parseInt(req.query.page) || 1;
-            const limit = parseInt(req.query.limit) || 10;
-            
-            const prayers = await PrayerModel.getAllApprovedPraises(page, limit);
+            const prayers = await PrayerModel.getAllApprovedPraises();
             
             res.json({
                 success: true,

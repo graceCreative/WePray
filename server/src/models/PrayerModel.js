@@ -91,9 +91,8 @@ class PrayerModel {
         }
     }
 
-    static async getAll(page = 1, limit = 10) {
+    static async getAll() {
         try {
-            const offset = (page - 1) * limit;
             
             const [prayers] = await pool.query(`
                 SELECT 
@@ -104,29 +103,18 @@ class PrayerModel {
                 LEFT JOIN users u ON p.user_id = u.id
                 LEFT JOIN users r ON p.reviewed_by = r.id
                 ORDER BY p.created_at DESC
-                LIMIT ? OFFSET ?`,
-                [limit, offset]
             );
 
             const [total] = await pool.query('SELECT COUNT(*) as count FROM prayers');
 
-            return {
-                prayers,
-                pagination: {
-                    total: total[0].count,
-                    page,
-                    limit,
-                    pages: Math.ceil(total[0].count / limit)
-                }
-            };
+            return {prayers};
         } catch (error) {
             throw error;
         }
     }
 
-    static async getAllApprovedPrayers(page = 1, limit = 10) {
+    static async getAllApprovedPrayers() {
         try {
-            const offset = (page - 1) * limit;
             
             const [prayers] = await pool.query(`
                 SELECT 
@@ -140,31 +128,20 @@ class PrayerModel {
                     AND p.type = 'prayer'
                     AND p.visibility = 1
                 ORDER BY p.created_at DESC
-                LIMIT ? OFFSET ?`,
-                [limit, offset]
             );
     
             const [total] = await pool.query(
                 'SELECT COUNT(*) as count FROM prayers WHERE status = "approved"'
             );
     
-            return {
-                prayers,
-                pagination: {
-                    total: total[0].count,
-                    page,
-                    limit,
-                    pages: Math.ceil(total[0].count / limit)
-                }
-            };
+            return {prayers};
         } catch (error) {
             throw error;
         }
     }
 
-    static async getAllApprovedPraises(page = 1, limit = 10) {
+    static async getAllApprovedPraises() {
         try {
-            const offset = (page - 1) * limit;
             
             const [prayers] = await pool.query(`
                 SELECT 
@@ -178,23 +155,13 @@ class PrayerModel {
                     AND p.type = 'praise'
                     AND p.visibility = TRUE
                 ORDER BY p.created_at DESC
-                LIMIT ? OFFSET ?`,
-                [limit, offset]
             );
     
             const [total] = await pool.query(
                 'SELECT COUNT(*) as count FROM prayers WHERE status = "approved"'
             );
     
-            return {
-                prayers,
-                pagination: {
-                    total: total[0].count,
-                    page,
-                    limit,
-                    pages: Math.ceil(total[0].count / limit)
-                }
-            };
+            return {prayers};
         } catch (error) {
             throw error;
         }
