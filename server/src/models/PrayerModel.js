@@ -92,80 +92,67 @@ class PrayerModel {
     }
 
     static async getAll() {
-        try {
-            
-            const [prayers] = await pool.query(`
-                SELECT 
-                    p.*,
-                    u.name as user_name,
-                    r.name as reviewer_name
-                FROM prayers p
-                LEFT JOIN users u ON p.user_id = u.id
-                LEFT JOIN users r ON p.reviewed_by = r.id
-                ORDER BY p.created_at DESC
-            );
+    try {
+        const [prayers] = await pool.query(`
+            SELECT 
+                p.*,
+                u.name as user_name,
+                r.name as reviewer_name
+            FROM prayers p
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN users r ON p.reviewed_by = r.id
+            ORDER BY p.created_at DESC`
+        );
 
-            const [total] = await pool.query('SELECT COUNT(*) as count FROM prayers');
-
-            return {prayers};
-        } catch (error) {
-            throw error;
-        }
+        return { prayers };
+    } catch (error) {
+        throw error;
     }
+}
 
-    static async getAllApprovedPrayers() {
-        try {
-            
-            const [prayers] = await pool.query(`
-                SELECT 
-                    p.*,
-                    u.name as user_name,
-                    r.name as reviewer_name
-                FROM prayers p
-                LEFT JOIN users u ON p.user_id = u.id
-                LEFT JOIN users r ON p.reviewed_by = r.id
-                WHERE p.status = 'approved'
-                    AND p.type = 'prayer'
-                    AND p.visibility = 1
-                ORDER BY p.created_at DESC
-            );
-    
-            const [total] = await pool.query(
-                'SELECT COUNT(*) as count FROM prayers WHERE status = "approved"'
-            );
-    
-            return {prayers};
-        } catch (error) {
-            throw error;
-        }
-    }
+static async getAllApprovedPrayers() {
+    try {
+        const [prayers] = await pool.query(`
+            SELECT 
+                p.*,
+                u.name as user_name,
+                r.name as reviewer_name
+            FROM prayers p
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN users r ON p.reviewed_by = r.id
+            WHERE p.status = 'approved'
+                AND p.type = 'prayer'
+                AND p.visibility = 1
+            ORDER BY p.created_at DESC`
+        );
 
-    static async getAllApprovedPraises() {
-        try {
-            
-            const [prayers] = await pool.query(`
-                SELECT 
-                    p.*,
-                    u.name as user_name,
-                    r.name as reviewer_name
-                FROM prayers p
-                LEFT JOIN users u ON p.user_id = u.id
-                LEFT JOIN users r ON p.reviewed_by = r.id
-                WHERE p.status = 'approved'
-                    AND p.type = 'praise'
-                    AND p.visibility = TRUE
-                ORDER BY p.created_at DESC
-            );
-    
-            const [total] = await pool.query(
-                'SELECT COUNT(*) as count FROM prayers WHERE status = "approved"'
-            );
-    
-            return {prayers};
-        } catch (error) {
-            throw error;
-        }
+        return { prayers };
+    } catch (error) {
+        throw error;
     }
+}
+
+static async getAllApprovedPraises() {
+    try {
+        const [prayers] = await pool.query(`
+            SELECT 
+                p.*,
+                u.name as user_name,
+                r.name as reviewer_name
+            FROM prayers p
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN users r ON p.reviewed_by = r.id
+            WHERE p.status = 'approved'
+                AND p.type = 'praise'
+                AND p.visibility = TRUE
+            ORDER BY p.created_at DESC`
+        );
+
+        return { prayers };
+    } catch (error) {
+        throw error;
+    }
+}
 
     static async updateStatus(id, status, reviewerId) {
         try {
