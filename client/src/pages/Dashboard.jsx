@@ -12,6 +12,10 @@ import {
     faComments 
 } from '@fortawesome/free-solid-svg-icons';
 
+const ITEMS_PER_PAGE = 10;
+
+// Components
+
 const Dashboard = () => {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -21,6 +25,9 @@ const Dashboard = () => {
     const [prayerMessage, setPrayerMessage] = useState("");
     const [prayerID, setPrayerID] = useState(null);
     const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
 
     // States
     const [prayers, setPrayers] = useState([]);
@@ -47,43 +54,41 @@ const Dashboard = () => {
         end_time: ''
     });
 
-    useEffect(() => {
-        fetchDashboardData();
-    }, [user.role]);
+    
 
-    const fetchDashboardData = async () => {
+    const fetchDashboardData = async (page = 1) => {
         try {
             setLoading(true);
             setError(null);
     
             const [prayersRes, eventsRes, usersRes, coordinatorsRes] = await Promise.all([
-                (user.role == 'admin' || user.role == 'coordinator') ? api.get('/prayers') : api.get('/prayers/approvedPrayers'),
+                (user.role == 'admin' || user.role == 'coordinator') 
+                ? api.get(`/prayers?page=${page}&limit=${ITEMS_PER_PAGE}`) 
+                : api.get(`/prayers/approvedPrayers?page=${page}&limit=${ITEMS_PER_PAGE}`),
                 api.get('/events'),
                 (user.role == 'admin' || user.role == 'coordinator') ? api.get('/users/members') : null,
                 user.role === 'admin' ? api.get('/users/coordinators') : null
             ]);
     
             setPrayers(Array.isArray(prayersRes.data.data.prayers) ? prayersRes.data.data.prayers : []);
-            
+            setTotalPages(Math.ceil(prayersRes.data.data.total / ITEMS_PER_PAGE));
             console.log('Received prayers data:', prayersRes.data.data.prayers);
             
             setEvents(Array.isArray(eventsRes.data.data.events) ? eventsRes.data.data.events : []);
             
             
 
-            if(user.role == 'coordinator' || user.role === 'admin'){
-                var allUsers = Array.isArray(usersRes.data.data.users) ? usersRes.data.data.users : [];
+            if (user.role === 'admin' || user.role === 'coordinator') {
+                const allUsers = [...(usersRes?.data?.data?.users || [])];
+                if (user.role === 'admin' && coordinatorsRes) {
+                    allUsers.push(...coordinatorsRes.data.data.users);
+                }
+                setUsers(allUsers);
             }
             
-            if (user.role === 'admin' && coordinatorsRes) {
-                const coordinators = Array.isArray(coordinatorsRes.data.data.users) ? coordinatorsRes.data.data.users : [];
-                allUsers = [...allUsers, ...coordinators];
-            }
-            
-            setUsers(allUsers);
             
             setStats({
-                totalPrayers: prayersRes.data.data.prayers.length,
+                totalPrayers: prayersRes.data.data.total,
                 pendingPrayers: prayersRes.data.data.prayers.filter(p => p.status === 'pending')?.length || 0,
                 totalEvents: eventsRes.data.data.events.length
             });
@@ -93,6 +98,14 @@ const Dashboard = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    useEffect(() => {
+        fetchDashboardData(currentPage);
+    }, [currentPage, user.role]);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
     };
 
     const handleMakeCoordinator = async (userId) => {
@@ -227,6 +240,27 @@ const Dashboard = () => {
         }
     };
 
+    const PaginationControls = () => (
+        <div className="flex justify-center mt-4 space-x-2">
+            <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+                Previous
+            </button>
+            <span className="px-4 py-2">
+                Page {currentPage} of {totalPages}
+            </span>
+            <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+                Next
+            </button>
+        </div>
+    );
     const renderUserManagementSection = () => {
         if (user.role !== 'admin' && user.role !== 'coordinator') return null;
 
@@ -281,7 +315,7 @@ const Dashboard = () => {
                 return (
                     <>
                         {/* Stats Overview */}
-                        <div className="grid grid-cols-3 gap-6 mb-8">
+                        <div className="grid grid-cols-3 gap-6 mb- max-h-screen">
                             <div className="bg-[#409F9C] text-white p-5 rounded-lg">
                                 <div className='text-white'>Total Prayers</div>
                                 <div className="text-3xl text-white">{stats.totalPrayers}</div>
@@ -323,7 +357,7 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {prayers.slice(0, 5).map((prayer) => (
+                                    {prayers.map((prayer) => (
                                         <tr key={prayer.id}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {prayer.name}
@@ -674,6 +708,7 @@ const Dashboard = () => {
 
                 {/* Dynamic Content based on active tab */}
                 {renderContent()}
+                <PaginationControls />
             </div>
             {/* Edit Prayer Message Modal */}
                 {showEditForm && (

@@ -38,8 +38,8 @@ const Home = () => {
       const prayersResponse = await api.get("/prayers/approvedPrayers");
       const praisesResponse = await api.get("/prayers/approvedPraises");
 
-      const fetchedPrayerCount = prayersResponse.data?.data?.prayers?.length || 0;
-      const fetchedPraiseCount = praisesResponse.data?.data?.prayers?.length || 0;
+      const fetchedPrayerCount = (prayersResponse.data?.data?.total - 1) || 0;
+      const fetchedPraiseCount = (praisesResponse.data?.data?.total - 1) || 0;
 
       setPrayerCount(fetchedPrayerCount);
       setPraiseCount(fetchedPraiseCount);

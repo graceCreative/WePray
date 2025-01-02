@@ -91,8 +91,9 @@ class PrayerModel {
         }
     }
 
-    static async getAll() {
+    static async getAll(page = 1, limit = 10) {
     try {
+        const offset = (page - 1) * limit
         const [prayers] = await pool.query(`
             SELECT 
                 p.*,
@@ -101,17 +102,28 @@ class PrayerModel {
             FROM prayers p
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN users r ON p.reviewed_by = r.id
-            ORDER BY p.created_at DESC`
+            ORDER BY
+                p.status = 'pending' DESC, 
+                p.created_at DESC
+            LIMIT ? OFFSET ?`, 
+            [limit, offset] 
         );
 
-        return { prayers };
+        const [total] = await pool.query(
+            'SELECT COUNT(*) as count FROM prayers'
+        );
+        return {
+            prayers,
+            total: total[0].count
+        };
     } catch (error) {
         throw error;
     }
 }
 
-static async getAllApprovedPrayers() {
+static async getAllApprovedPrayers(page = 1, limit = 10) {
     try {
+        const offset = (page - 1) * limit
         const [prayers] = await pool.query(`
             SELECT 
                 p.*,
@@ -120,19 +132,35 @@ static async getAllApprovedPrayers() {
             FROM prayers p
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN users r ON p.reviewed_by = r.id
-            WHERE p.type = 'prayer'
+            WHERE p.status = 'approved'
+                AND p.type = 'prayer'
                 AND p.visibility = 1
-            ORDER BY p.created_at DESC`
+            ORDER BY p.created_at DESC
+            LIMIT ? OFFSET ?`, 
+            [limit, offset] 
         );
 
-        return { prayers };
+        const [total] = await pool.query(
+            `
+            SELECT COUNT(*) AS count
+            FROM prayers
+            WHERE status = 'approved'
+                AND type = 'prayer'
+                AND visibility = 1
+            `
+        );
+        return {
+            prayers,
+            total: total[0].count
+        };
     } catch (error) {
         throw error;
     }
 }
 
-static async getAllApprovedPraises() {
+static async getAllApprovedPraises(page = 1, limit = 10) {
     try {
+        const offset = (page - 1) * limit
         const [prayers] = await pool.query(`
             SELECT 
                 p.*,
@@ -143,11 +171,25 @@ static async getAllApprovedPraises() {
             LEFT JOIN users r ON p.reviewed_by = r.id
             WHERE p.status = 'approved'
                 AND p.type = 'praise'
-                AND p.visibility = TRUE
-            ORDER BY p.created_at DESC`
+                AND p.visibility = 1
+            ORDER BY p.created_at DESC
+            LIMIT ? OFFSET ?`, 
+            [limit, offset] 
         );
 
-        return { prayers };
+        const [total] = await pool.query(
+            `
+            SELECT COUNT(*) AS count
+            FROM prayers
+            WHERE status = 'approved'
+                AND type = 'praise'
+                AND visibility = 1
+            `
+        );
+        return {
+            prayers,
+            total: total[0].count
+        };
     } catch (error) {
         throw error;
     }
