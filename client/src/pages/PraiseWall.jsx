@@ -93,7 +93,7 @@ const PraiseWall = () => {
 
       const response = await fetch('/', {
         method: 'POST',
-        body: netlifyData,
+        body: new URLSearchParams(netlifyData).toString(),
       });
       if (response.ok) {
         // Reset the form and set success state
@@ -105,6 +105,7 @@ const PraiseWall = () => {
         setSuccess(true);
         setError(null);
         setShowForm(false);
+        console.log(("admin was notified"));
   
         setTimeout(() => setSuccess(false), 3000);
       } else {

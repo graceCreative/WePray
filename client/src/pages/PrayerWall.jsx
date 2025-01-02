@@ -116,7 +116,7 @@ const PrayerWall = () => {
 
       const response = await fetch('/', {
         method: 'POST',
-        body: netlifyData,
+        body: new URLSearchParams(netlifyData).toString(),
       });
       if (response.ok) {
         // Reset the form and set success state
@@ -128,7 +128,7 @@ const PrayerWall = () => {
         setSuccess(true);
         setError(null);
         setShowForm(false);
-  
+        console.log("admin was notified");
         setTimeout(() => setSuccess(false), 3000);
       } else {
         // throw new Error('Failed to submit prayer request to Netlify');
