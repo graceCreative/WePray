@@ -24,12 +24,16 @@ class PrayerController {
 
    static async getAll(req, res) {
        try {
-           
-           const prayers = await PrayerModel.getAll();
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+           const {prayers, total} = await PrayerModel.getAll(page, limit);
            console.log("prayerWall", prayers);
            res.json({
                success: true,
-               data: prayers
+               data: {
+                prayers,
+                total,
+            }
            });
        } catch (error) {
             console.log("error in getAll", error);
@@ -42,12 +46,16 @@ class PrayerController {
 
    static async getAllApprovedPrayers(req, res) {
         try {
-            
-            const prayers = await PrayerModel.getAllApprovedPrayers();
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const {prayers, total} = await PrayerModel.getAllApprovedPrayers(page, limit);
             
             res.json({
                 success: true,
-                data: prayers
+                data: {
+                    prayers,
+                    total,
+                }
             });
         } catch (error) {
             res.status(500).json({
@@ -59,11 +67,17 @@ class PrayerController {
 
     static async getAllApprovedPraises(req, res) {
         try {
-            const prayers = await PrayerModel.getAllApprovedPraises();
+
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const {prayers, total} = await PrayerModel.getAllApprovedPraises(page, limit);
             
             res.json({
                 success: true,
-                data: prayers
+                data: {
+                    prayers,
+                    total,
+                }
             });
         } catch (error) {
             res.status(500).json({
