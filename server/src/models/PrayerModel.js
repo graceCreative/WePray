@@ -132,8 +132,7 @@ static async getAllApprovedPrayers(page = 1, limit = 10) {
             FROM prayers p
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN users r ON p.reviewed_by = r.id
-            WHERE p.status = 'approved'
-                AND p.type = 'prayer'
+            WHERE p.type = 'prayer'
                 AND p.visibility = 1
             ORDER BY p.created_at DESC
             LIMIT ? OFFSET ?`, 
@@ -144,8 +143,7 @@ static async getAllApprovedPrayers(page = 1, limit = 10) {
             `
             SELECT COUNT(*) AS count
             FROM prayers
-            WHERE status = 'approved'
-                AND type = 'prayer'
+            WHERE type = 'prayer'
                 AND visibility = 1
             `
         );
@@ -169,8 +167,7 @@ static async getAllApprovedPraises(page = 1, limit = 10) {
             FROM prayers p
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN users r ON p.reviewed_by = r.id
-            WHERE p.status = 'approved'
-                AND p.type = 'praise'
+            WHERE p.type = 'praise'
                 AND p.visibility = 1
             ORDER BY p.created_at DESC
             LIMIT ? OFFSET ?`, 
@@ -181,8 +178,7 @@ static async getAllApprovedPraises(page = 1, limit = 10) {
             `
             SELECT COUNT(*) AS count
             FROM prayers
-            WHERE status = 'approved'
-                AND type = 'praise'
+            WHERE type = 'praise'
                 AND visibility = 1
             `
         );
