@@ -4,12 +4,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faHome, 
-    faUsers, 
-    faCog, 
-    faPrayingHands, 
-    faComments 
+import {
+    faHome,
+    faUsers,
+    faCog,
+    faPrayingHands,
+    faComments,
+    faBars,
+    faTimes
 } from '@fortawesome/free-solid-svg-icons';
 
 const ITEMS_PER_PAGE = 50;
@@ -55,29 +57,29 @@ const Dashboard = () => {
         end_time: ''
     });
 
-    
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const fetchDashboardData = async (page = 1) => {
         try {
             setLoading(true);
             setError(null);
-    
+
             const [prayersRes, eventsRes, usersRes, coordinatorsRes] = await Promise.all([
-                (user.role == 'admin' || user.role == 'coordinator') 
-                ? api.get(`/prayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`)
-                : api.get(`/prayers/approvedPrayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`),
+                (user.role == 'admin' || user.role == 'coordinator')
+                    ? api.get(`/prayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`)
+                    : api.get(`/prayers/approvedPrayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`),
                 api.get('/events'),
                 (user.role == 'admin' || user.role == 'coordinator') ? api.get('/users/members') : null,
                 user.role === 'admin' ? api.get('/users/coordinators') : null
             ]);
-    
+
             setPrayers(Array.isArray(prayersRes.data.data.prayers) ? prayersRes.data.data.prayers : []);
             setTotalPages(Math.ceil(prayersRes.data.data.total / ITEMS_PER_PAGE));
             console.log('Received prayers data:', prayersRes.data.data.prayers);
-            
+
             setEvents(Array.isArray(eventsRes.data.data.events) ? eventsRes.data.data.events : []);
-            
-            
+
+
 
             if (user.role === 'admin' || user.role === 'coordinator') {
                 const allUsers = [...(usersRes?.data?.data?.users || [])];
@@ -86,8 +88,8 @@ const Dashboard = () => {
                 }
                 setUsers(allUsers);
             }
-            
-            
+
+
             setStats({
                 totalPrayers: prayersRes.data.data.total,
                 pendingPrayers: prayersRes.data.data.prayers.filter(p => p.status === 'pending')?.length || 0,
@@ -216,7 +218,7 @@ const Dashboard = () => {
             console.log(error);
             setError('Failed to update prayer status');
         }
-    };    
+    };
 
     const handleMessageChange = (e) => {
         setPrayerMessage(e.target.value);
@@ -251,7 +253,7 @@ const Dashboard = () => {
             >
                 Previous
             </button>
-            
+
             {[...Array(Math.min(5, totalPages))].map((_, idx) => {
                 let pageNum;
                 if (totalPages <= 5) {
@@ -268,11 +270,10 @@ const Dashboard = () => {
                     <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
-                        className={`px-4 py-2 rounded ${
-                            currentPage === pageNum 
-                            ? 'bg-[#409F9C] text-white' 
-                            : 'bg-gray-200'
-                        }`}
+                        className={`px-4 py-2 rounded ${currentPage === pageNum
+                                ? 'bg-[#409F9C] text-white'
+                                : 'bg-gray-200'
+                            }`}
                     >
                         {pageNum}
                     </button>
@@ -337,15 +338,70 @@ const Dashboard = () => {
     };
 
     const renderContent = () => {
-        switch(activeTab) {
+        switch (activeTab) {
             case 'dashboard':
                 return (
                     <>
+                        {/* Mobile Menu Header */}
+                        <div className="mobile-dashboard-menu">
+                            <div>
+                                <img src="./assets/logo.png" alt="" />
+                                <h1 className="font-semibold">Dashbord</h1>
+                            </div>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="text-2xl"
+                            >
+                                <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} />
+                            </button>
+                        </div>
+
+                        {/* Mobile Menu Drawer */}
+                        <div className={`mobile-menu-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
+                            <div className="p-4">
+                                <h2 className="text-lg font-bold mb-4">Menu</h2>
+                                <ul className="space-y-4">
+                                    <li onClick={() => {
+                                        setActiveTab('dashboard');
+                                        setIsMobileMenuOpen(false);
+                                    }} className={`p-2 rounded cursor-pointer ${activeTab === 'dashboard' ? 'bg-[#409F9C] text-white' : ''}`}>
+                                        Dashboard
+                                    </li>
+                                    {(user.role === 'admin' || user.role === 'coordinator') && (
+                                        <li onClick={() => {
+                                            setActiveTab('manage_users');
+                                            setIsMobileMenuOpen(false);
+                                        }} className={`p-2 rounded cursor-pointer ${activeTab === 'manage_users' ? 'bg-[#409F9C] text-white' : ''}`}>
+                                            Manage Users
+                                        </li>
+                                    )}
+                                    <li onClick={() => {
+                                        setActiveTab('prayer_requests');
+                                        setIsMobileMenuOpen(false);
+                                    }} className={`p-2 rounded cursor-pointer ${activeTab === 'prayer_requests' ? 'bg-[#409F9C] text-white' : ''}`}>
+                                        Prayer Requests
+                                    </li>
+                                    <li onClick={() => {
+                                        setActiveTab('events');
+                                        setIsMobileMenuOpen(false);
+                                    }} className={`p-2 rounded cursor-pointer ${activeTab === 'events' ? 'bg-[#409F9C] text-white' : ''}`}>
+                                        Events
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Overlay */}
+                        <div
+                            className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        />
+
                         {/* Stats Overview */}
                         <div className="grid grid-cols-3 gap-6 mb-8 stats-grid">
                             <div className="bg-[#409F9C] text-white p-5 rounded-lg">
-                                <div className='text-white'>People Prayed For You</div>
-                                <div className="text-3xl text-white">{stats.prayedForYou} people</div>
+                                <div className='text-white'>Total Prayers</div>
+                                <div className="text-3xl text-white">{stats.prayedForYou}</div>
                             </div>
                             {(user.role === 'admin' || user.role === 'coordinator') && (
                                 <div className="bg-[#409F9C] text-white p-5 rounded-lg">
@@ -354,10 +410,10 @@ const Dashboard = () => {
                                 </div>
                             )}
                             {(user.role === 'admin' || user.role === 'coordinator') && (
-                            <div className="bg-[#409F9C] text-white p-5 rounded-lg">
-                                <div className='text-white'>Active Members</div>
-                                <div className="text-3xl text-white">{users.length}</div>
-                            </div>
+                                <div className="bg-[#409F9C] text-white p-5 rounded-lg">
+                                    <div className='text-white'>Active Members</div>
+                                    <div className="text-3xl text-white">{users.length}</div>
+                                </div>
                             )}
                         </div>
 
@@ -369,7 +425,7 @@ const Dashboard = () => {
                                     Total: {prayers.length} | Pending: {stats.pendingPrayers}
                                 </div>
                             </div>
-                            <table className="min-w-full divide-y divide-gray-200">
+                            <table className="min-w-full divide-y divide-gray-200 responsive-table">
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
@@ -386,36 +442,39 @@ const Dashboard = () => {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {prayers.map((prayer) => (
                                         <tr key={prayer.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td data-label="Name" className="px-6 py-4">
                                                 {prayer.name}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td data-label="Date" className="px-6 py-4">
                                                 {prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
                                                     day: 'numeric',
                                                     month: 'short',
                                                     year: 'numeric'
                                                 }) : 'N/A'}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{prayer.report_count}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{prayer.type}</td>
-                                            <td className="px-6 py-4 whitespace-normal max-w-xs truncate">
+                                            <td data-label="Report Count" className="px-6 py-4">
+                                                {prayer.report_count}
+                                            </td>
+                                            <td data-label="Type" className="px-6 py-4">
+                                                {prayer.type}
+                                            </td>
+                                            <td data-label="Message" className="px-6 py-4">
                                                 {prayer.message}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    ${prayer.status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                                      prayer.status === 'rejected' ? 'bg-red-100 text-red-800' : 
-                                                      'bg-yellow-100 text-yellow-800'}`}
-                                                >
+                                            <td data-label="Status" className="px-6 py-4">
+                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-badge
+                                                    ${prayer.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                    prayer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                    'bg-yellow-100 text-yellow-800'}`}>
                                                     {prayer.status}
                                                 </span>
                                             </td>
-                                            {(user.role === 'admin' || user.role === 'coordinator')  && (
-                                                <td className="px-6 py-4 whitespace-nowrap flex flex-col text-sm">
+                                            {(user.role === 'admin' || user.role === 'coordinator') && (
+                                                <td data-label="Actions" className="px-6 py-4 action-buttons">
                                                     {prayer.status !== 'approved' && (
                                                         <button
                                                             onClick={() => handlePrayerStatusUpdate(prayer.id, 'approved')}
-                                                            className=" px-3 py-1 bg-green-500 text-white text-xs rounded-md"
+                                                            className="px-3 py-1 bg-green-500 text-white text-xs rounded-md"
                                                         >
                                                             Approve
                                                         </button>
@@ -471,18 +530,18 @@ const Dashboard = () => {
                                     <tr key={prayer.id}>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.created_at ? new Date(prayer.created_at).toLocaleDateString('en-GB', {
-                                                    day: 'numeric',
-                                                    month: 'short',
-                                                    year: 'numeric'
-                                                }) : 'N/A'}</td>
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric'
+                                        }) : 'N/A'}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.report_count}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{prayer.type}</td>
                                         <td className="px-6 py-4 whitespace-normal max-w-xs truncate">{prayer.message}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                ${prayer.status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                                  prayer.status === 'rejected' ? 'bg-red-100 text-red-800' : 
-                                                  'bg-yellow-100 text-yellow-800'}`}>
+                                                ${prayer.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                    prayer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                        'bg-yellow-100 text-yellow-800'}`}>
                                                 {prayer.status}
                                             </span>
                                         </td>
@@ -530,7 +589,7 @@ const Dashboard = () => {
                                 </button>
                             )}
                         </div>
-                        
+
                         {/* Event listing table */}
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
@@ -539,9 +598,9 @@ const Dashboard = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Start Time</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">End Time</th>
-                                    {(user.role==='admin' || user.role==='coordinator') && (
+                                    {(user.role === 'admin' || user.role === 'coordinator') && (
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                    )}    
+                                    )}
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -557,15 +616,15 @@ const Dashboard = () => {
                                         </td>
                                         {(user.role === 'admin' || user.role === 'coordinator') && (
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                            <button
-                                                onClick={() => handleDeleteEvent(event.id)}
-                                                className="px-3 py-1 bg-red-500 text-white rounded-md"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
+                                                <button
+                                                    onClick={() => handleDeleteEvent(event.id)}
+                                                    className="px-3 py-1 bg-red-500 text-white rounded-md"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
                                         )}
-                                        
+
                                     </tr>
                                 ))}
                             </tbody>
@@ -582,7 +641,7 @@ const Dashboard = () => {
                                             <input
                                                 type="text"
                                                 value={eventForm.title}
-                                                onChange={(e) => setEventForm({...eventForm, title: e.target.value})}
+                                                onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
                                                 className="mt-1 bg-white block w-full rounded-md border-gray-300 p-1 shadow-md"
                                                 required
                                             />
@@ -591,7 +650,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Description</label>
                                             <textarea
                                                 value={eventForm.description}
-                                                onChange={(e) => setEventForm({...eventForm, description: e.target.value})}
+                                                onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
                                                 className="mt-1 bg-white block w-full rounded-md border-gray-300 p-1 shadow-md"
                                                 rows={3}
                                                 required
@@ -601,7 +660,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Event Type</label>
                                             <select
                                                 value={eventForm.event_type}
-                                                onChange={(e) => setEventForm({...eventForm, event_type: e.target.value})}
+                                                onChange={(e) => setEventForm({ ...eventForm, event_type: e.target.value })}
                                                 className="mt-1 bg-white block w-full rounded-md border-gray-300 p-1 shadow-md"
                                             >
                                                 <option value="live_prayer">Live Prayer</option>
@@ -614,7 +673,7 @@ const Dashboard = () => {
                                             <input
                                                 type="datetime-local"
                                                 value={eventForm.start_time}
-                                                onChange={(e) => setEventForm({...eventForm, start_time: e.target.value})}
+                                                onChange={(e) => setEventForm({ ...eventForm, start_time: e.target.value })}
                                                 className="mt-1 p-1 bg-gray-300 block w-full rounded-md border-gray-300 shadow-md"
                                                 required
                                             />
@@ -624,7 +683,7 @@ const Dashboard = () => {
                                             <input
                                                 type="datetime-local"
                                                 value={eventForm.end_time}
-                                                onChange={(e) => setEventForm({...eventForm, end_time: e.target.value})}
+                                                onChange={(e) => setEventForm({ ...eventForm, end_time: e.target.value })}
                                                 className="mt-1 p-1 bg-gray-300 block w-full rounded-md border-gray-300 shadow-md "
                                                 required
                                             />
@@ -667,25 +726,25 @@ const Dashboard = () => {
         <div className="flex h-screen overflow-hidden dashboard-container">
             {/* Sidebar */}
             <div className="w-1/4 bg-gray-200 p-4 dashboard-sidebar">
-            <a href="/"><div className="text-lg font-bold mb-0">WiPray</div></a>
+                <a href="/"><div className="text-lg font-bold mb-0">WiPray</div></a>
                 {user.role === 'admin' && <div className="text-sm font-medium mb-8 ">Admin Panel</div>}
                 {user.role === 'coordinator' && <div className="text-sm font-medium mb-4">Coordinator</div>}
                 <ul>
-                    <li 
+                    <li
                         className={`mb-2 p-2 rounded cursor-pointer `}
                         onClick={() => navigate('/')}
-                        >
+                    >
                         Home
                     </li>
-                    <li 
+                    <li
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'dashboard' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('dashboard')}
                     >
                         Dashboard
                     </li>
-                    
+
                     {(user.role === 'admin' || user.role === 'coordinator') && (
-                        <li 
+                        <li
                             className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'manage_users' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                             onClick={() => setActiveTab('manage_users')}
                         >
@@ -693,28 +752,28 @@ const Dashboard = () => {
                         </li>
                     )}
                     {(user.role === 'admin' || user.role === 'coordinator') && (
-                    <li 
-                        className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'community' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
-                        onClick={() => setActiveTab('community')}
-                    >
-                        Community Settings
-                    </li>
+                        <li
+                            className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'community' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
+                            onClick={() => setActiveTab('community')}
+                        >
+                            Community Settings
+                        </li>
                     )}
                     {(user.role === 'admin' || user.role === 'coordinator') && (
-                    <li 
-                        className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'prayer_requests' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
-                        onClick={() => setActiveTab('prayer_requests')}
-                    >
-                        Prayer Requests
-                    </li>
+                        <li
+                            className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'prayer_requests' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
+                            onClick={() => setActiveTab('prayer_requests')}
+                        >
+                            Prayer Requests
+                        </li>
                     )}
-                    <li 
+                    <li
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'comments' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('comments')}
                     >
                         Comments and Reactions
                     </li>
-                    <li 
+                    <li
                         className={`mb-2 p-2 rounded cursor-pointer ${activeTab === 'events' ? 'bg-[#409F9C] text-white' : 'hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('events')}
                     >

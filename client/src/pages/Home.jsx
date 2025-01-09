@@ -7,8 +7,6 @@ import logo from "../assets/logo.png";
 import heroImg from "../assets/heroImg.png";
 import howImg from "../assets/how.png";
 import star from "../assets/star.png";
-import tv1 from "../assets/show1.png";
-import tv2 from "../assets/show2.png";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';

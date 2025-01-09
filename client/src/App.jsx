@@ -16,13 +16,13 @@ import PrayerDetails from './components/PrayerDetails';
 import Contact from './pages/Contact';
 import Donate from './pages/Donate';
 import ComingSoon from './pages/ComingSoon';
-import SmoothScroll from './components/SmoothScroll';
+// import SmoothScroll from './components/SmoothScroll';
 import "./App.css"; // Your main CSS
 
 const App = () => {
     return (
         <div className="app-container">
-            <SmoothScroll />
+            {/* <SmoothScroll /> */}
             <main>
                 <Router>
                     <AuthProvider>
