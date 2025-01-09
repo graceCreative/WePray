@@ -12,7 +12,7 @@ import {
     faComments 
 } from '@fortawesome/free-solid-svg-icons';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 50;
 
 // Components
 
@@ -35,7 +35,8 @@ const Dashboard = () => {
     const [stats, setStats] = useState({
         totalPrayers: 0,
         pendingPrayers: 0,
-        totalEvents: 0
+        totalEvents: 0,
+        prayedForYou: 0
     });
 
     // Modal states and forms
@@ -63,8 +64,8 @@ const Dashboard = () => {
     
             const [prayersRes, eventsRes, usersRes, coordinatorsRes] = await Promise.all([
                 (user.role == 'admin' || user.role == 'coordinator') 
-                ? api.get(`/prayers?page=${page}&limit=${ITEMS_PER_PAGE}`) 
-                : api.get(`/prayers/approvedPrayers?page=${page}&limit=${ITEMS_PER_PAGE}`),
+                ? api.get(`/prayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`)
+                : api.get(`/prayers/approvedPrayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`),
                 api.get('/events'),
                 (user.role == 'admin' || user.role == 'coordinator') ? api.get('/users/members') : null,
                 user.role === 'admin' ? api.get('/users/coordinators') : null
@@ -90,7 +91,8 @@ const Dashboard = () => {
             setStats({
                 totalPrayers: prayersRes.data.data.total,
                 pendingPrayers: prayersRes.data.data.prayers.filter(p => p.status === 'pending')?.length || 0,
-                totalEvents: eventsRes.data.data.events.length
+                totalEvents: eventsRes.data.data.events.length,
+                prayedForYou: prayersRes.data.data.prayedForYou || 0
             });
         } catch (error) {
             console.error('Dashboard data error:', error);
@@ -249,9 +251,34 @@ const Dashboard = () => {
             >
                 Previous
             </button>
-            <span className="px-4 py-2">
-                Page {currentPage} of {totalPages}
-            </span>
+            
+            {[...Array(Math.min(5, totalPages))].map((_, idx) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                    pageNum = idx + 1;
+                } else if (currentPage <= 3) {
+                    pageNum = idx + 1;
+                } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + idx;
+                } else {
+                    pageNum = currentPage - 2 + idx;
+                }
+
+                return (
+                    <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-4 py-2 rounded ${
+                            currentPage === pageNum 
+                            ? 'bg-[#409F9C] text-white' 
+                            : 'bg-gray-200'
+                        }`}
+                    >
+                        {pageNum}
+                    </button>
+                );
+            })}
+
             <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
@@ -315,10 +342,10 @@ const Dashboard = () => {
                 return (
                     <>
                         {/* Stats Overview */}
-                        <div className="grid grid-cols-3 gap-6 mb- max-h-screen">
+                        <div className="grid grid-cols-3 gap-6 mb-8 stats-grid">
                             <div className="bg-[#409F9C] text-white p-5 rounded-lg">
-                                <div className='text-white'>Total Prayers</div>
-                                <div className="text-3xl text-white">{stats.totalPrayers}</div>
+                                <div className='text-white'>People Prayed For You</div>
+                                <div className="text-3xl text-white">{stats.prayedForYou} people</div>
                             </div>
                             {(user.role === 'admin' || user.role === 'coordinator') && (
                                 <div className="bg-[#409F9C] text-white p-5 rounded-lg">
@@ -637,9 +664,9 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex h-screen overflow-hidden dashboard-container">
             {/* Sidebar */}
-            <div className="w-1/4 bg-gray-200 p-4">
+            <div className="w-1/4 bg-gray-200 p-4 dashboard-sidebar">
             <a href="/"><div className="text-lg font-bold mb-0">WiPray</div></a>
                 {user.role === 'admin' && <div className="text-sm font-medium mb-8 ">Admin Panel</div>}
                 {user.role === 'coordinator' && <div className="text-sm font-medium mb-4">Coordinator</div>}
@@ -697,7 +724,7 @@ const Dashboard = () => {
             </div>
 
             {/* Main Content */}
-            <div className="w-3/4 p-6 overflow-y-auto max-h-screen">
+            <div className="w-3/4 p-6 overflow-y-auto dashboard-content">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-semibold">Welcome, {user.name}</h1>
@@ -709,11 +736,11 @@ const Dashboard = () => {
                 {/* Dynamic Content based on active tab */}
                 {renderContent()}
                 <PaginationControls />
-            </div>
-            {/* Edit Prayer Message Modal */}
+
+                {/* Modals */}
                 {showEditForm && (
                     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-8 rounded-lg w-1/2">
+                        <div className="bg-white p-8 rounded-lg modal-content">
                             <h3 className="text-lg font-medium mb-4">Edit Prayer Message</h3>
                             <form onSubmit={(e) => {
                                 e.preventDefault();
@@ -749,6 +776,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 )}
+            </div>
         </div>
     );
 };

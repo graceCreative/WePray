@@ -19,6 +19,7 @@ import 'swiper/css/pagination';
 import { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import api from "../utils/axios";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
 
@@ -73,40 +74,7 @@ const Home = () => {
   return (
     <div>
 
-      <nav className="nav">
-        <a href="/">
-          <div className="logo">
-            <img src={logo} alt="WePray Logo" />
-            <h1>WiPray</h1>
-          </div>
-        </a>
-
-        <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
-          <FontAwesomeIcon icon={isDrawerOpen ? faTimes : faBars} size="2x" />
-        </div>
-
-        <div className={`nav-drawer ${isDrawerOpen ? 'open' : ''}`}>
-          <ul>
-            <li><Link to="/" className="active" onClick={() => setIsDrawerOpen(false)}>Home</Link></li>
-            <li><Link to="/about" onClick={() => setIsDrawerOpen(false)}>About Us</Link></li>
-            <li><Link to="/prayerWall" onClick={() => setIsDrawerOpen(false)}>Prayer Wall</Link></li>
-            <li><Link to="/praiseWall" onClick={() => setIsDrawerOpen(false)}>Praises</Link></li>
-            <li><Link to="/dashboard" onClick={() => setIsDrawerOpen(false)}>Dashboard</Link></li>
-            <li><Link to="/contact" onClick={() => setIsDrawerOpen(false)}>Contact Us</Link></li>
-            <Link to="https://www.paypal.com/donate/?hosted_button_id=BXQLKAWHSRFBN" className="cta" onClick={() => setIsDrawerOpen(false)}>Donate</Link>
-          </ul>
-        </div>
-
-        <ul className="desktop-nav">
-          <li><Link to="/" className="active">Home</Link></li>
-          <li><Link to="/about">About Us</Link></li>
-          <li><Link to="/prayerWall">Prayer Wall</Link></li>
-          <li><Link to="/praiseWall">Praises</Link></li>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/contact">Contact Us</Link></li>
-        </ul>
-        <Link to="https://www.paypal.com/donate/?hosted_button_id=BXQLKAWHSRFBN" className="cta">Donate</Link>
-      </nav>
+      <Navbar/>
 
       {isDrawerOpen && (
         <div className="drawer-overlay" onClick={() => setIsDrawerOpen(false)} />
@@ -131,10 +99,10 @@ const Home = () => {
 
           <div className="numbers mask">
             <div className="number anim">
-              <h3>{prayerCount.toLocaleString()}+</h3>Prayers Prayed
+              <h3>{prayerCount.toLocaleString()}</h3>Prayers Prayed
             </div>
             <div className="number anim">
-              <h3>{praiseCount.toLocaleString()}+</h3>Praise Submitted
+              <h3>{praiseCount.toLocaleString()}</h3>Praise Submitted
             </div>
           </div>
 
@@ -155,12 +123,16 @@ const Home = () => {
       <div className="tv-section animText1">
         <h1>PRAYER TV SHOWS</h1>
         <div className="show-container">
-          {["Karma or Putting others First", "Beautiful Through Christ", "Karma or Putting others First"].map((title, index) => (
+          {/* {[
+            "Karma or Putting others First", 
+            "Beautiful Through Christ", 
+            "Karma or Putting others First"
+          ].map((title, index) => (
             <div className="card" key={index}>
               <img src={tv1} alt="" />
               <div className="card-detail">
                 <h2>{title}</h2>
-                <svg width="71" height="71" viewBox="0 0 71 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="55" height="55" viewBox="0 0 71 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_11_14)">
                     <path d="M35.5 0C44.9152 0 53.9448 3.74017 60.6023 10.3977C67.2598 17.0553 71 26.0848 71 35.5C71 44.9152 67.2598 53.9448 60.6023 60.6023C53.9448 67.2598 44.9152 71 35.5 71C26.0848 71 17.0553 67.2598 10.3977 60.6023C3.74017 53.9448 0 44.9152 0 35.5C0 26.0848 3.74017 17.0553 10.3977 10.3977C17.0553 3.74017 26.0848 0 35.5 0ZM6.65625 35.5C6.65625 43.1498 9.69514 50.4864 15.1044 55.8956C20.5136 61.3049 27.8502 64.3438 35.5 64.3438C43.1498 64.3438 50.4864 61.3049 55.8956 55.8956C61.3049 50.4864 64.3438 43.1498 64.3438 35.5C64.3438 27.8502 61.3049 20.5136 55.8956 15.1044C50.4864 9.69514 43.1498 6.65625 35.5 6.65625C27.8502 6.65625 20.5136 9.69514 15.1044 15.1044C9.69514 20.5136 6.65625 27.8502 6.65625 35.5ZM28.3068 23.1948L47.2283 34.5504C47.3918 34.6491 47.5271 34.7884 47.621 34.9548C47.7148 35.1212 47.7642 35.309 47.7642 35.5C47.7642 35.691 47.7148 35.8788 47.621 36.0452C47.5271 36.2116 47.3918 36.3509 47.2283 36.4496L28.3068 47.8052C28.1386 47.9065 27.9464 47.9614 27.75 47.9642C27.5536 47.9669 27.36 47.9175 27.1889 47.8209C27.0179 47.7243 26.8755 47.5841 26.7765 47.4145C26.6774 47.2449 26.6251 47.052 26.625 46.8556V24.1489C26.6243 23.9521 26.676 23.7586 26.7748 23.5884C26.8735 23.4182 27.0158 23.2773 27.187 23.1802C27.3582 23.0831 27.5521 23.0332 27.7489 23.0358C27.9457 23.0384 28.1382 23.0933 28.3068 23.1948Z" fill="white" />
                   </g>
@@ -173,7 +145,12 @@ const Home = () => {
 
               </div>
             </div>
-          ))}
+          ))} */}
+
+          <iframe width="560" height="250" src="https://www.youtube.com/embed/kHtZUe6fg6s?si=ywH_lC_ZyrpRNg8r" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe width="560" height="250" src="https://www.youtube.com/embed/-AvMtqUbxys?si=MC1F-hcIoMnh-T_c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe width="560" height="250" src="https://www.youtube.com/embed/gmwQQyvN8H4?si=f6dAR2jSoJagTDPL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
         </div>
       </div>
 

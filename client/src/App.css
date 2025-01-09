@@ -244,7 +244,7 @@ h1 {
 /* TV CSS */
 .tv-section {
   width: 100%;
-  padding: 4rem 4rem;
+  padding: 2rem 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -259,6 +259,10 @@ h1 {
   gap: 30px;
   width: 100%;
   margin: 3rem auto;
+}
+
+.show-container iframe{
+  border-radius: 15px;
 }
 
 .card {
@@ -595,6 +599,10 @@ h1 {
     padding: 0.5rem 1rem !important;
   }
 
+  .show-container iframe{
+    width: 100%;
+  }
+
   .mobile-menu, .nav-drawer{
     display: block !important;
   }
@@ -714,7 +722,7 @@ h1 {
   }
 
   .tv-section {
-    padding: 2rem;
+    padding: 1rem;
   }
 
   .show-container {
@@ -727,7 +735,7 @@ h1 {
 
   .how-section {
     flex-direction: column;
-    padding: 2rem;
+    padding: 1rem;
     gap: 2rem;
   }
 
@@ -963,4 +971,85 @@ textarea {
 
 
 
+}
+
+/* Add these new styles */
+.nav-controls {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-donate {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .nav-controls {
+    display: flex;
+  }
+
+  .mobile-donate {
+    display: block !important;
+    width: 90px !important;
+    padding: 0.5rem 0.5rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .nav .cta {
+    display: none;
+  }
+}
+
+/* Add these styles for Dashboard responsiveness */
+@media screen and (max-width: 1024px) {
+  /* Tablet styles */
+  .dashboard-container {
+    flex-direction: column !important;
+  }
+
+  .dashboard-sidebar {
+    width: 100% !important;
+    padding: 1rem;
+  }
+
+  .dashboard-content {
+    width: 100% !important;
+    padding: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Mobile styles */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-table {
+    overflow-x: auto;
+  }
+
+  .dashboard-table table {
+    min-width: 800px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+
+  .modal-content {
+    width: 90% !important;
+    margin: 1rem;
+    padding: 1rem;
+  }
 }

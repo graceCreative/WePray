@@ -135,7 +135,7 @@ const PrayerCard = ({
           className={`mt-4 px-4 py-2 text-sm rounded-md ${
             isPrayed 
               ? 'border bg-gray-200 border-gray-300 text-gray-700' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              : 'bg-[#9be2e0] text-white hover:bg-gray-200'
           }`}
           onClick={handlePray}
           disabled={isPrayed}
