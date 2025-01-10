@@ -16,7 +16,10 @@ const Footer = () => {
             <img src={logo} alt="" />
             <h1>WePray</h1>
           </div>
-          <b>Share Your Prayers, Uplift Your Soul</b>
+          {/* <div className='text-xs md:text-sm text-white'> */}
+          <p className='text-sm text-white font-medium'>Share Your Prayers, Uplift Your Soul</p>
+          {/* </div> */}
+          
         </div>
         <div className="col2">
           <b>Quick Links</b> <br />
@@ -39,7 +42,7 @@ const Footer = () => {
             <a href=''>
               {/* <FontAwesomeIcon icon={faLocationDot} style={{ color: 'white' }} /> */}Berrien Springs, Michigan US 
             </a> <br /><br />
-          <b>Socila Links</b>
+          {/* <b>Social Links</b> */}
         </div>
       </div>
 

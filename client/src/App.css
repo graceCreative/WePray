@@ -586,6 +586,44 @@ h1 {
   color: #fff;
 }
 
+.action-buttons {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+.action-buttons button {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+td[data-label="Actions"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 16px !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  min-width: 100px !important;
+}
+
+td[data-label="Actions"] button {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+
+.responsive-table td {
+  padding: 1rem;
+  vertical-align: middle;
+  position: relative;
+}
+
 
 
 /* Default: Hide the mobile menu and show the desktop menu */
@@ -598,7 +636,6 @@ h1 {
   nav {
     padding: 0.5rem 1rem !important;
   }
-
   .show-container iframe{
     width: 100%;
   }
@@ -1014,7 +1051,6 @@ textarea {
   }
 
   .dashboard-content {
-    width: 100% !important;
     padding: 1rem;
   }
 
@@ -1054,12 +1090,28 @@ textarea {
   }
 }
 .mobile-menu-drawer{
-  display: none;
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  height: 100vh;
+  background: white;
+  transition: all 0.3s ease;
+  z-index: 45;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
 }
 
 /* Add these styles for mobile dashboard */
 .mobile-dashboard-menu {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: white;
+  z-index: 50;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 @media screen and (max-width: 768px) {
@@ -1078,7 +1130,7 @@ textarea {
   }
 
   .mobile-dashboard-menu {
-    display: block;
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -1222,8 +1274,5 @@ textarea {
     min-width: 80px;
   }
 
-  /* Status badge styling */
-  .responsive-table .status-badge {
-    margin-left: auto;
-  }
+ 
 }

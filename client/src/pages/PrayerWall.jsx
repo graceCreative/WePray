@@ -287,8 +287,10 @@ const PrayerWall = () => {
                   value={visibility}
                   onChange={(e) =>setVisibility(e.target.value)}
                   className="border bg-white border-gray-300 rounded-md"
+                  required
               >
-                  <option value={true}>Yes! Share this on the prayer wall</option>
+                  <option value="">Select an option</option>
+                  <option value={1}>Yes! Share this on the prayer wall</option>
                   <option value={0}>No! Do not display this prayer</option>
               </select>
               

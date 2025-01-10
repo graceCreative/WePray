@@ -134,8 +134,8 @@ const PrayerCard = ({
           <button 
           className={`mt-4 px-4 py-2 text-sm rounded-md ${
             isPrayed 
-              ? 'border bg-gray-200 border-gray-300 text-gray-700' 
-              : 'bg-[#9be2e0] text-white hover:bg-gray-200'
+              ? 'border bg-gray-200 border-gray-500 text-gray-700' 
+              : 'bg-gray-200 border-gray-500 text-gray-700 hover:bg-gray-200'
           }`}
           onClick={handlePray}
           disabled={isPrayed}
@@ -200,7 +200,7 @@ const PrayerCard = ({
           <a className='text-gray-800' href={`/prayers/${prayerID}`}>
           <button className="w-full px-3 py-2 mb-2 border-gray-300 text-sm text-left bg-gray-100 rounded-md flex items-center">
             <Info className="h-4 w-4 mr-2" />
-            Prayer detail
+            {type} details
           </button></a>
         </div>
       )}
