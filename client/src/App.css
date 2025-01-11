@@ -244,7 +244,7 @@ h1 {
 /* TV CSS */
 .tv-section {
   width: 100%;
-  padding: 4rem 4rem;
+  padding: 2rem 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -259,6 +259,10 @@ h1 {
   gap: 30px;
   width: 100%;
   margin: 3rem auto;
+}
+
+.show-container iframe{
+  border-radius: 15px;
 }
 
 .card {
@@ -582,6 +586,44 @@ h1 {
   color: #fff;
 }
 
+.action-buttons {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+.action-buttons button {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+td[data-label="Actions"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 16px !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  min-width: 100px !important;
+}
+
+td[data-label="Actions"] button {
+  width: 100% !important;
+  padding: 8px 12px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+
+.responsive-table td {
+  padding: 1rem;
+  vertical-align: middle;
+  position: relative;
+}
+
 
 
 /* Default: Hide the mobile menu and show the desktop menu */
@@ -593,6 +635,9 @@ h1 {
 @media screen and (max-width: 768px) {
   nav {
     padding: 0.5rem 1rem !important;
+  }
+  .show-container iframe{
+    width: 100%;
   }
 
   .mobile-menu, .nav-drawer{
@@ -714,7 +759,7 @@ h1 {
   }
 
   .tv-section {
-    padding: 2rem;
+    padding: 1rem;
   }
 
   .show-container {
@@ -727,7 +772,7 @@ h1 {
 
   .how-section {
     flex-direction: column;
-    padding: 2rem;
+    padding: 1rem;
     gap: 2rem;
   }
 
@@ -963,4 +1008,271 @@ textarea {
 
 
 
+}
+
+/* Add these new styles */
+.nav-controls {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-donate {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .nav-controls {
+    display: flex;
+  }
+
+  .mobile-donate {
+    display: block !important;
+    width: 90px !important;
+    padding: 0.5rem 0.5rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .nav .cta {
+    display: none;
+  }
+}
+
+/* Add these styles for Dashboard responsiveness */
+@media screen and (max-width: 1024px) {
+  /* Tablet styles */
+  .dashboard-container {
+    flex-direction: column !important;
+  }
+
+  .dashboard-sidebar {
+    width: 100% !important;
+    padding: 1rem;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Mobile styles */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-table {
+    overflow-x: auto;
+  }
+
+  .dashboard-table table {
+    min-width: 800px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+
+  .modal-content {
+    width: 90% !important;
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
+.mobile-menu-drawer{
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  height: 100vh;
+  background: white;
+  transition: all 0.3s ease;
+  z-index: 45;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+
+/* Add these styles for mobile dashboard */
+.mobile-dashboard-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: white;
+  z-index: 50;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-sidebar {
+    display: none; /* Hide desktop sidebar on mobile */
+  }
+
+  .dashboard-content {
+    width: 100% !important;
+    padding: 1rem;
+    margin-top: 60px; /* Space for mobile header */
+  }
+
+  .mobile-dashboard-menu {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 0.2rem 1rem;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-dashboard-menu div{
+    width: 150px;
+  }
+
+  .mobile-dashboard-menu h1{
+    font-size: 18px !important;
+  }
+
+  .mobile-dashboard-menu button{
+    background-color: #fff;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-menu-drawer {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -80%;
+    width: 80%;
+    height: 100vh;
+    background: white;
+    transition: 0.3s ease;
+    z-index: 1001;
+    padding: 0rem;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+  }
+
+  .mobile-menu-drawer.open {
+    left: 0;
+  }
+
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+  }
+
+  .mobile-menu-overlay.open {
+    display: block;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .dashboard-table {
+    overflow-x: auto;
+  }
+
+  .dashboard-table table {
+    min-width: 800px;
+  }
+
+  .modal-content {
+    width: 90% !important;
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* Add these styles for responsive tables */
+@media screen and (max-width: 768px) {
+  .responsive-table {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-table thead {
+    display: none; /* Hide table headers on mobile */
+  }
+
+  .responsive-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .responsive-table td {
+    display: flex;
+    padding: 0.5rem 0;
+    border: none;
+    align-items: center;
+  }
+
+  .responsive-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    width: 120px;
+    min-width: 120px;
+    color: #374151;
+  }
+
+  .responsive-table td:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Action buttons in table */
+  .responsive-table td.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .responsive-table td.action-buttons button {
+    flex: 1;
+    min-width: 80px;
+  }
+
+ 
 }
