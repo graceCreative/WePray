@@ -35,7 +35,6 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
         await login(formData.email, formData.password);
     } catch (error) {
@@ -51,7 +50,7 @@ const Login = () => {
     if (currentReturnTo) {
       localStorage.setItem("google_auth_return_to", currentReturnTo);
     }
-    window.location.href = "http://localhost:8000/api/auth/google";
+    window.location.href = "https://wepray-production.up.railway.app/api/auth/google";
   };
   return (
     <>
