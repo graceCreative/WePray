@@ -19,7 +19,19 @@ const prayerValidations = {
 };
 
 router.post('/', validate(prayerValidations.create), PrayerController.create);
-router.get('/', isAuth, isCoordinator, PrayerController.getAll);
+router.post('/authUser',isAuth, validate(prayerValidations.create), PrayerController.create);
+router.get('/', 
+  (req, res, next) => {
+      console.log('Route handler start');
+      next();
+  },
+  isAuth,
+  (req, res, next) => {
+      console.log('After auth middleware, user:', req.user);
+      next();
+  },
+  PrayerController.getAll
+);
 router.get('/approvedPrayers', validate(prayerValidations.approved),  PrayerController.getAllApprovedPrayers);
 router.get('/approvedPraises', validate(prayerValidations.approved),  PrayerController.getAllApprovedPraises);
 router.get('/stats', isAuth, isCoordinator, PrayerController.getStats);

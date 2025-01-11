@@ -1,5 +1,5 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
@@ -19,56 +19,64 @@ import ComingSoon from './pages/ComingSoon';
 import SmoothScroll from './components/SmoothScroll';
 import "./App.css"; // Your main CSS
 
+
+
 const App = () => {
     return (
+        <Router>
+            <AuthProvider>
+                <AppContent />
+            </AuthProvider>
+        </Router>
+    );
+};
+
+const AppContent = () => {
+    const location = useLocation();
+    const isDashboard = location.pathname === '/dashboard';
+
+    return (
         <div className="app-container">
-            <SmoothScroll />
+            {!isDashboard && <SmoothScroll />}
             <main>
-                <Router>
-                    <AuthProvider>
-                        <Routes>
-                            {/* Public Routes */}
-                            <Route path="/" element={<Home />} /> 
-                            {/* above route will break css because of how navbar is implemented
-                            This shuld be fixed in frontend */}
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/auth/callback" element={<AuthCallback />} />
-                            <Route path="/unauthorized" element={<Unauthorized />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/prayerWall" element={<PrayerWall />} />
-                            <Route path="/praiseWall" element={<PraiseWall />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/donate" element={<Donate />} />
-                            <Route path="/comingSoon" element={<ComingSoon />} />
-                            <Route path="/prayers/:id/report" element={<ReportForm />}/>
-                            <Route path="/prayers/:id" element={<PrayerDetails />}/>
+                <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Home />} /> 
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/unauthorized" element={<Unauthorized />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/prayerWall" element={<PrayerWall />} />
+                    <Route path="/praiseWall" element={<PraiseWall />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/donate" element={<Donate />} />
+                    <Route path="/comingSoon" element={<ComingSoon />} />
+                    <Route path="/prayers/:id/report" element={<ReportForm />}/>
+                    <Route path="/prayers/:id" element={<PrayerDetails />}/>
 
-                            {/* Protected Routes */}
-                            <Route
-                                path="/dashboard"
-                                element={
-                                    <ProtectedRoute>
-                                        <Dashboard />
-                                    </ProtectedRoute>
-                                }
-                            />
+                    {/* Protected Routes */}
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                            {/* Redirect root to dashboard if <Home /> is not rendered above */}
-                            <Route
-                                path="/"
-                                element={
-                                    <ProtectedRoute>
-                                        <Navigate to="/home" replace />
-                                    </ProtectedRoute>
-                                }
-                            />
+                    <Route
+                        path="/"
+                        element={
+                            <ProtectedRoute>
+                                <Navigate to="/home" replace />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                            {/* Catch all route */}
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                        </Routes>
-                    </AuthProvider>
-                </Router>
+                    {/* Catch all route */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
             </main>
         </div>
     );

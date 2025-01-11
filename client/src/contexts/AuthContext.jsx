@@ -43,7 +43,9 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(user));
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setUser(user);
-            navigate('/dashboard');
+            const returnUrl = localStorage.getItem("returnTo") || "/dashboard";
+      localStorage.removeItem("returnTo");
+      navigate(returnUrl)
             return true;
         } catch (error) {
             throw error;

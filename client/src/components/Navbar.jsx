@@ -19,10 +19,12 @@ const [isDrawerOpen, setIsDrawerOpen] = useState(false);
             </div>
           </a>
         
-
-        <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
-          <FontAwesomeIcon icon={isDrawerOpen ? faTimes : faBars} size="2x" />
-        </div>
+          <div className="nav-controls">
+            <Link to="https://www.paypal.com/donate/?hosted_button_id=BXQLKAWHSRFBN" className="mobile-donate cta">Donate</Link>
+            <div className="mobile-menu" onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+              <FontAwesomeIcon icon={isDrawerOpen ? faTimes : faBars} size="2x" />
+            </div>
+          </div>
 
         <div className={`nav-drawer ${isDrawerOpen ? 'open' : ''}`}>
           <ul>
@@ -32,7 +34,6 @@ const [isDrawerOpen, setIsDrawerOpen] = useState(false);
             <li><Link to="/praiseWall" onClick={() => setIsDrawerOpen(false)}>Praises</Link></li>
             <li><Link to="/dashboard" onClick={() => setIsDrawerOpen(false)}>Dashboard</Link></li>
             <li><Link to="/contact" onClick={() => setIsDrawerOpen(false)}>Contact Us</Link></li>
-            <Link to="https://www.paypal.com/donate/?hosted_button_id=BXQLKAWHSRFBN" className="cta" onClick={() => setIsDrawerOpen(false)}>Donate</Link>
           </ul>
         </div>
 
