@@ -9,7 +9,6 @@ class PrayerController {
             };
  
             const prayer = await PrayerModel.create(prayerData);
-            console.log("prayer req submitted");
             res.status(201).json({
                 success: true,
                 data: prayer
@@ -22,28 +21,48 @@ class PrayerController {
         }
     }
 
-   static async getAll(req, res) {
-       try {
+    static async getAll(req, res) {
+        try {
+            console.log('=== GetAll Controller Start ===');
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
-           const {prayers, total} = await PrayerModel.getAll(page, limit);
-           console.log("prayerWall", prayers);
-           res.json({
-               success: true,
-               data: {
-                prayers,
-                total,
+    
+            // console.log('Request user at controller start:', req.user);
+            // console.log('Full request headers:', req.headers);
+            
+            const userId = req.user?.id;
+            // console.log('Extracted userId:', userId);
+            
+            const isAdmin = req.user?.role === 'admin';
+            const isCoordinator = req.user?.role === 'coordinator';
+            // console.log('User role checks:', { isAdmin, isCoordinator });
+    
+            const filters = {};
+            if (!isAdmin && !isCoordinator && userId) {
+                filters.user_id = userId;
+                // console.log('Applied user filter:', filters);
             }
-           });
-       } catch (error) {
-            console.log("error in getAll", error);
-           res.status(500).json({
-               success: false,
-               message: error.message
-           });
-       }
-   }
-
+    
+            // console.log('Final filters before database query:', filters);
+            const {prayers, total} = await PrayerModel.getAll(page, limit, filters);
+            // console.log('Query completed. Total prayers:', total);
+            // console.log('=== GetAll Controller End ===');
+    
+            res.json({
+                success: true,
+                data: {
+                    prayers,
+                    total,
+                }
+            });
+        } catch (error) {
+            console.error("Error in getAll:", error);
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
    static async getAllApprovedPrayers(req, res) {
         try {
             const page = parseInt(req.query.page) || 1;

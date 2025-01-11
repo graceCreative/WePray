@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import api from '../utils/axios';
 import PrayerCard from '../components/shared/PrayerCard';
+import { useAuth } from "../contexts/AuthContext";
 import {useNavigate} from 'react-router-dom'
+import AuthChoiceModal from '../components/AuthChoiceModal';
 
 const PraiseWall = () => {
   const [visibility, setVisibility] = useState(true);
@@ -24,6 +26,8 @@ const PraiseWall = () => {
   const [loading, setLoading] = useState(false);
 
   const [hasMore, setHasMore] = useState(true); 
+  const { user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const navigate = useNavigate();
 
   const fetchPrayers = async () => {
@@ -128,6 +132,20 @@ const PraiseWall = () => {
     }
   };
 
+  const handlePraiseButtonClick = () => {
+    if (!user) {
+      setShowAuthModal(true);
+    } else {
+      setShowForm(true);
+    }
+  };
+
+  const handleContinueAsGuest = () => {
+    setShowAuthModal(false);
+    setShowForm(true);
+  };
+  
+
   const handleChange = (e) => {
     setPrayerForm({
       ...prayerForm,
@@ -157,7 +175,7 @@ const PraiseWall = () => {
           <div className='flex flex-col w-full py-4'>
             <div className='flex flex-row'>
             <button
-            onClick={() => setShowForm(true)} 
+            onClick={handlePraiseButtonClick} 
             className="px-3 py-1 py-2 px-4 w-50 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#409F9C] hover:bg-[#368B88] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#409F9C]">
               Submit a Praise
             </button>
@@ -180,6 +198,11 @@ const PraiseWall = () => {
               />
             ))}
             </div>
+            <AuthChoiceModal 
+  isOpen={showAuthModal}
+  onClose={() => setShowAuthModal(false)}
+  onContinueAsGuest={handleContinueAsGuest}
+/>
           </div>
         ) : (
           <form name="praise-request" method="POST" data-netlify="true" onSubmit={handleSubmit} className="space-y-6">

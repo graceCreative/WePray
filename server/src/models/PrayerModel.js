@@ -91,9 +91,21 @@ class PrayerModel {
         }
     }
 
-    static async getAll(page = 1, limit = 10) {
+    static async getAll(page = 1, limit = 10, filters = {}) {
     try {
         const offset = (page - 1) * limit
+        const whereClauses = [];
+        const values = [];
+
+        if (filters.user_id) {
+            whereClauses.push("p.user_id = ?");
+            values.push(filters.user_id);
+        }
+
+        const whereString = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+        // console.log("Filters:", filters); // Log filters
+        // console.log("Where String:", whereString);
+
         const [prayers] = await pool.query(`
             SELECT 
                 p.*,
@@ -102,15 +114,22 @@ class PrayerModel {
             FROM prayers p
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN users r ON p.reviewed_by = r.id
+            ${whereString}
             ORDER BY
                 p.status = 'pending' DESC, 
                 p.created_at DESC
             LIMIT ? OFFSET ?`, 
-            [limit, offset] 
+            [...values, limit, offset] 
         );
 
+        // console.log("Fetched Prayers SQL Result:", prayers);
+
         const [total] = await pool.query(
-            'SELECT COUNT(*) as count FROM prayers'
+            `
+            SELECT COUNT(*) as count
+            FROM prayers p
+            ${whereString}`,
+            values
         );
         return {
             prayers,

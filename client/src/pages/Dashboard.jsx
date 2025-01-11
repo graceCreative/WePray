@@ -70,7 +70,7 @@ const Dashboard = () => {
                 `/prayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`
               )
             : api.get(
-                `/prayers/approvedPrayers?page=${page}&limit=${ITEMS_PER_PAGE}&sort=created_at:desc`
+                `/prayers?page=${page}&limit=${ITEMS_PER_PAGE}`
               ),
           api.get("/events"),
           user.role == "admin" || user.role == "coordinator"
@@ -107,7 +107,7 @@ const Dashboard = () => {
           prayersRes.data.data.prayers.filter((p) => p.status === "pending")
             ?.length || 0,
         totalEvents: eventsRes.data.data.events.length,
-        prayedForYou: prayersRes.data.data.prayedForYou || 0,
+        prayedForYou: prayersRes.data.data.prayers.reduce((acc, prayer) => acc + (prayer.pray_count || 0), 0),
       });
     } catch (error) {
       console.error("Dashboard data error:", error);
@@ -385,6 +385,12 @@ const Dashboard = () => {
                 <div className="text-white">Total Prayers</div>
                 <div className="text-3xl text-white">{stats.totalPrayers}</div>
               </div>
+              {(user.role === "member") && (
+              <div className="bg-[#409F9C] text-white p-5 rounded-lg">
+                <div className="text-white">People Prayed for You</div>
+                <div className="text-3xl text-white">{stats.prayedForYou}</div>
+              </div>
+              )}
               {(user.role === "admin" || user.role === "coordinator") && (
                 <div className="bg-[#409F9C] text-white p-5 rounded-lg">
                   <div className="text-white">New Prayer Requests</div>
@@ -421,7 +427,7 @@ const Dashboard = () => {
                       Date
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Report Count
+                      Pray Count
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Type
@@ -458,7 +464,7 @@ const Dashboard = () => {
                           : "N/A"}
                       </td>
                       <td data-label="Report Count" className="px-6 py-4">
-                        {prayer.report_count}
+                        {prayer.pray_count}
                       </td>
                       <td data-label="Type" className="px-6 py-4">
                         {prayer.type}
